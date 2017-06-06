@@ -1,0 +1,24 @@
+c:\users\insertname\documents\visual studio 2015\Projects\FocusLock\FocusLock\bin\Debug\FocusLock.exe.config
+C:\Users\InsertName\documents\visual studio 2015\Projects\FocusLock\FocusLock\obj\Debug\Interop.IWshRuntimeLibrary.dll
+C:\Users\InsertName\documents\visual studio 2015\Projects\FocusLock\FocusLock\obj\Debug\FocusLock.csproj.ResolveComReference.cache
+C:\Users\InsertName\documents\visual studio 2015\Projects\FocusLock\FocusLock\bin\Debug\FocusLock.exe
+C:\Users\InsertName\documents\visual studio 2015\Projects\FocusLock\FocusLock\bin\Debug\FocusLock.pdb
+C:\Users\InsertName\documents\visual studio 2015\Projects\FocusLock\FocusLock\obj\Debug\FocusLock.MainForm.resources
+C:\Users\InsertName\documents\visual studio 2015\Projects\FocusLock\FocusLock\obj\Debug\FocusLock.Properties.Resources.resources
+C:\Users\InsertName\documents\visual studio 2015\Projects\FocusLock\FocusLock\obj\Debug\FocusLock.csproj.GenerateResource.Cache
+C:\Users\InsertName\documents\visual studio 2015\Projects\FocusLock\FocusLock\obj\Debug\FocusLock.exe
+C:\Users\InsertName\documents\visual studio 2015\Projects\FocusLock\FocusLock\obj\Debug\FocusLock.pdb
+C:\Users\InsertName\documents\visual studio 2015\Projects\FocusLock\FocusLock\obj\Debug\FocusLock.csprojResolveAssemblyReference.cache
+C:\Users\InsertName\documents\visual studio 2015\Projects\FocusLock\FocusLock\obj\Debug\FocusLock.Calendar.resources
+C:\Users\Mc IceBerg\Desktop\FocusLock\FocusLock\bin\Debug\FocusLock.exe.config
+C:\Users\Mc IceBerg\Desktop\FocusLock\FocusLock\obj\Debug\Interop.IWshRuntimeLibrary.dll
+C:\Users\Mc IceBerg\Desktop\FocusLock\FocusLock\obj\Debug\FocusLock.csproj.ResolveComReference.cache
+C:\Users\Mc IceBerg\Desktop\FocusLock\FocusLock\obj\Debug\FocusLock.exe
+C:\Users\Mc IceBerg\Desktop\FocusLock\FocusLock\obj\Debug\FocusLock.pdb
+C:\Users\Mc IceBerg\Desktop\FocusLock\FocusLock\bin\Debug\FocusLock.exe
+C:\Users\Mc IceBerg\Desktop\FocusLock\FocusLock\bin\Debug\FocusLock.pdb
+C:\Users\Mc IceBerg\Desktop\FocusLock\FocusLock\obj\Debug\FocusLock.csprojResolveAssemblyReference.cache
+C:\Users\Mc IceBerg\Desktop\FocusLock\FocusLock\obj\Debug\FocusLock.Calendar.resources
+C:\Users\Mc IceBerg\Desktop\FocusLock\FocusLock\obj\Debug\FocusLock.MainForm.resources
+C:\Users\Mc IceBerg\Desktop\FocusLock\FocusLock\obj\Debug\FocusLock.Properties.Resources.resources
+C:\Users\Mc IceBerg\Desktop\FocusLock\FocusLock\obj\Debug\FocusLock.csproj.GenerateResource.Cache
