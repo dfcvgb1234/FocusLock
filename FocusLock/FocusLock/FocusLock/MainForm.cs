@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Microsoft.Win32;
 using System.Threading;
 using System.Windows.Forms;
 using IWshRuntimeLibrary;
@@ -15,8 +16,18 @@ namespace FocusLock
 {
     public partial class MainForm : Form
     {
-        public static int minutes { get; set; }
-        public static int hours { get; set; }
+        public static int Minutes { get; set; }
+        public static int Hours { get; set; }
+
+        public static bool calendarOpen = false;
+
+        public static bool logout = false;
+
+        TimeOption to = new TimeOption();
+        CalendarOption co = new CalendarOption();
+        ExternalOption eo = new ExternalOption();
+
+        RegistryKey key;
 
         // Timer der kører hvert minut
         System.Windows.Forms.Timer timer;
@@ -33,9 +44,6 @@ namespace FocusLock
         // en array som indeholder de websites der bliver blokeret
         public static string[] websites;
 
-        // fortæller om programmet er blevet lukket
-        bool hasExited;
-
         // fortæller om programmet er blevet startet
         public static bool butPressed = false;
 
@@ -46,14 +54,14 @@ namespace FocusLock
             InitializeComponent();
             // definere den nye timer til at køre hvert minut
             timer = new System.Windows.Forms.Timer();
-            timer.Tick += new EventHandler(timer_tick);
+            timer.Tick += new EventHandler(Timer_tick);
             timer.Interval = 10000; // ændre dette til 60000 som er et minut
             timer.Start();
             // timer defination slut
         }
 
         // Hvad der sker når der er gået det tid som der er blevet definerert hos timeren
-        private void timer_tick(object sender, EventArgs e)
+        private void Timer_tick(object sender, EventArgs e)
         {
             // trykker på en knap i en anden thread, dette er Thread-safe
             //this.Invoke(new Action(() => { button1.PerformClick(); }));
@@ -67,7 +75,7 @@ namespace FocusLock
             if (e.CloseReason == CloseReason.UserClosing)
             {
                 // lukker kun hvis programmet ikke kører
-                if (!butPressed)
+                if (!butPressed && !logout)
                 {
                     Environment.Exit(1);
                 }
@@ -106,12 +114,28 @@ namespace FocusLock
         // metoden der sørger for at processerne bliver checket og lukket hvis de skal lukkes
         public static void StopProcesses(object[] Processes)
         {
+            Microsoft.Win32.RegistryKey cmd;
+            Microsoft.Win32.RegistryKey task;
+
+            //cmd = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\cmd.exe");
+            task = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\taskmgr.exe");
+
+            //cmd.SetValue("Debugger", "cmd.exe /k " + Environment.CurrentDirectory + "\\\"Acess Denied\"\\\"Acess Denied.html\"" + "& exit");
+            task.SetValue("Debugger", "cmd.exe /k " + Environment.CurrentDirectory + "\\\"Acess Denied\"\\\"Acess Denied.html\"" + "& exit");
+
+            //cmd.Close();
+            task.Close();
+
             // omdanner listen til en string array
             string[] proc = Processes.Where(x => x != null)
                        .Select(x => x.ToString())
                        .ToArray();
             foreach (string n in proc)
             {
+                Microsoft.Win32.RegistryKey key;
+                key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\" + n + ".exe");
+                key.SetValue("Debugger", "cmd.exe /k " + Environment.CurrentDirectory + "\\\"Acess Denied\"\\\"Acess Denied.html\"" + "& exit");
+                key.Close();
                 // finder processen og dræber den
                 Process[] running = Process.GetProcessesByName(n.ToLower());
                 foreach (Process j in running)
@@ -129,89 +153,24 @@ namespace FocusLock
         }
         // metode slut
 
-        // overload metode til process metoden
-        public static void StopProcesses(object[] Processes, string Proces)
-        {
-            // definerer en variable som der fortæller om den har fundet et match i vores liste
-            bool found = false;
-
-            // får igen alle processer
-
-            // omdanner igen vores liste til en string array
-            string[] proc = Processes.Where(x => x != null)
-                       .Select(x => x.ToString())
-                       .ToArray();
-
-            // En hurtigere måde at lukke joblisten på
-            if (Proces.ToLower() == "taskmgr")
-            {
-                // finder joblisten og dræber den
-                Process[] hej = Process.GetProcessesByName("taskmgr");
-                foreach (Process j in hej)
-                {
-                    try
-                    {
-                        j.Kill();
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e.Message);
-                    }
-                }
-            }
-            else
-            {
-                // checker hele vores list of sammenligner med den den angivne process
-                Console.WriteLine(proc.Length);
-                foreach (string j in proc)
-                {
-                    if (j.ToLower() == Proces.ToLower())
-                    {
-                        found = true;
-                        break;
-                    }
-                    else
-                    {
-                        found = false;
-                    }
-                    Console.WriteLine(found);
-                }
-
-                // hvis den har fundet den process der er blevet åbnet så skal den lukkes
-                if (found == true)
-                {
-                    Process[] hej = Process.GetProcessesByName(Proces.ToLower());
-                    foreach (Process j in hej)
-                    {
-                        try
-                        {
-                            j.Kill();
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e.Message);
-                        }
-                    }
-                }
-            }
-            Console.WriteLine("Closed: {0}", Proces);
-        }
-        // metode slut
-
         // Hvad der skal ske når programmet åbnes
         private void Main_Load(object sender, EventArgs e)
         {
-            string currentOptionPath = @"C:\Windows\System32\drivers\etc\CurrentOption.begeba";
 
-            if (System.IO.File.Exists(currentOptionPath))
+            logout = false;
+
+            key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock");
+
+            if (key.GetValue("CurrentOption") != null)
             {
-                string fileText = System.IO.File.ReadAllText(currentOptionPath);
-                if (string.IsNullOrWhiteSpace(fileText))
+                string fileText = key.GetValue("CurrentOption").ToString();
+                if (!string.IsNullOrWhiteSpace(fileText))
                 {
                     if(fileText == "CALENDAR")
                     {
                         CalendarOption co = new CalendarOption();
                         co.Show(this);
+                        co.Update(this);
                     }
 
                     if(fileText == "TIME")
@@ -254,7 +213,7 @@ namespace FocusLock
         }
         // metode slut
 
-        // metode til at updatere Host filen
+        // metode til at opdatere Host filen
         public static void UpdateHostFile(string updateText)
         {
             string path = @"C:\Windows\System32\drivers\etc\hosts";
@@ -275,12 +234,18 @@ namespace FocusLock
         // En metode til at lave et shorcut når programmet bliver tændt
         public static void CreateShortcut(string shortcutName, string shortcutPath, string targetFileLocation)
         {
-            string shortcutLocation = System.IO.Path.Combine(shortcutPath, shortcutName + ".lnk");
-            WshShell shell = new WshShell();
-            IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(shortcutLocation);
+            RegistryKey key;
 
-            shortcut.TargetPath = targetFileLocation;           // den fil genvejen skal have
-            shortcut.Save();                                    // gem genvejen
+            key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run");
+
+            key.SetValue("FocusLock", Environment.CurrentDirectory + "\\" + "FocusLock.exe");
+
+            //string shortcutLocation = System.IO.Path.Combine(shortcutPath, shortcutName + ".lnk");
+            //WshShell shell = new WshShell();
+            //IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(shortcutLocation);
+
+            //shortcut.TargetPath = targetFileLocation;           // den fil genvejen skal have
+            //shortcut.Save();                                    // gem genvejen
         }
         // metode slut
 
@@ -378,26 +343,25 @@ namespace FocusLock
                     if (DateTime.Now.Hour == clock && DateTime.Now.DayOfWeek.ToString().ToLower() == day.ToLower())
                     {
                         // starter programmet hvis det er
-                        startProgram(true);
+                        StartProgram(true);
                         break;
                     }
                     else
                     {
                         // stopper programmet hvis ikke
-                        startProgram(false);
+                        StartProgram(false);
                     }
                 }
             }
         }
         // metode slut
 
-        // metode der starter programmet og stopper de´t
-        public static void startProgram(bool isTime)
+        // metode der starter programmet og stopper det
+        public static void StartProgram(bool isTime)
         {
-            string timeInfoPath = @"C:\Windows\System32\drivers\etc\TimeInfo.begeba";
-
             if (isTime)
             {
+                Console.WriteLine("Program has been started");
                 if(!onceBut)
                 {
                     Process[] chrome = Process.GetProcessesByName("chrome");
@@ -407,16 +371,25 @@ namespace FocusLock
                     }
 
                     onceBut = true;
-                }
-                StopProcesses(checkedPrograms);
-                butPressed = true;
-                CreateShortcut("FocusLock", Environment.GetFolderPath(Environment.SpecialFolder.Startup), AppDomain.CurrentDomain.BaseDirectory + "FocusLock.exe");
-                foreach (string j in System.IO.File.ReadAllText(@"C:\Windows\System32\drivers\etc\host.begeba").Split(';'))
-                    if (!String.IsNullOrWhiteSpace(j))
+                    StopProcesses(checkedPrograms);
+
+                    butPressed = true;
+                    CreateShortcut("FocusLock", Environment.GetFolderPath(Environment.SpecialFolder.Startup), AppDomain.CurrentDomain.BaseDirectory + "FocusLock.exe");
+
+                    if(!KeyExists("HOST"))
                     {
-                        UpdateHostFile(j);
+                        Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("HOST", "");
                     }
-                Console.WriteLine("Program has been run");
+
+                    foreach (string j in Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").GetValue("HOST").ToString().Split(';'))
+                    {
+                        if (!String.IsNullOrWhiteSpace(j))
+                        {
+                            UpdateHostFile(j);
+                        }
+                    }
+                    Console.WriteLine("Program has been run");
+                }
                 //MessageBox.Show("Programmet kører nu", "running");
             }
             if (!isTime)
@@ -424,45 +397,78 @@ namespace FocusLock
                 butPressed = false;
                 System.IO.File.Delete(@"C:\Windows\System32\drivers\etc\hosts");
                 System.IO.File.Delete(Environment.GetFolderPath(Environment.SpecialFolder.Startup) + @"\FocusLock.lnk");
+                //Registry.LocalMachine.DeleteSubKey(@"SOFTWARE\Begeba\FocusLock");
                 Console.WriteLine("Program has been stopped");
                 //MessageBox.Show("Programmet kører ikke længere", "Stopped");
                 onceBut = false;
+                DeleteRegistryData(checkedPrograms);
             }
         }
         // metode slut
 
-        // metode der fortæller hvilken indstilling programmet skal være i
-        private void Selector_SelectedIndexChanged(object sender, EventArgs e)
+        // metode der sletter det data som er blevet lagt ind i registry
+        public static void DeleteRegistryData(object[] Processes)
         {
-            // definer option classes
-            TimeOption to = new TimeOption();
-            CalendarOption co = new CalendarOption();
-            ExternalOption eo = new ExternalOption();
+            //Microsoft.Win32.Registry.LocalMachine.DeleteSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\cmd.exe");
+            Microsoft.Win32.Registry.LocalMachine.DeleteSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\taskmgr.exe");
 
-            // check hvad der er blevet valgt
-            switch (Selector.SelectedIndex)
+            string[] proc = Processes.Where(x => x != null)
+                       .Select(x => x.ToString())
+                       .ToArray();
+            Console.WriteLine(proc.Length);
+            Console.WriteLine(checkedPrograms.Length);
+            try
             {
-                case 0:
-                    to.Hide(this);
-                    co.Show(this);
-                    eo.Hide(this);
-                    co.Update(this);
-                    break;
+                foreach (string n in proc)
+                {
+                    Console.WriteLine(n);
+                    if (Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\" + n + ".exe") != null)
+                    {
+                        Microsoft.Win32.Registry.LocalMachine.DeleteSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\" + n + ".exe");
+                    }
+                }
+            }
+            catch
+            {
+            }
 
-                case 1:
-                    to.Show(this);
-                    co.Hide(this);
-                    eo.Hide(this);
-                    break;
+            if (KeyExists("CurrentOption"))
+            {
+                Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").DeleteValue("CurrentOption");
+            }
 
-                case 2:
-                    to.Hide(this);
-                    co.Hide(this);
-                    eo.Show(this);
-                    break;
+            if (KeyExists("TimeInfo"))
+            {
+                Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").DeleteValue("TimeInfo");
+            }
+
+            RegistryKey key;
+
+            key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run");
+
+            key.DeleteValue("FocusLock");
+        }
+
+        public static bool KeyExists(string value)
+        {
+            RegistryKey key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock");
+
+            try
+            {
+                if (key.GetValue(value) == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
             }
         }
-        // metode slut
 
         // metode der fortæller hvad der sker når der bliver trykket på program knappen
         private void Programs_but_Click(object sender, EventArgs e)
@@ -475,6 +481,133 @@ namespace FocusLock
         {
             var Websites_form = new Websites();
             Websites_form.Show();
+        }
+
+        private void åbenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!onceBut)
+            {
+                to.Show(this);
+                co.Hide(this);
+                eo.Hide(this);
+
+                co.updating = false;
+
+                calendarOpen = false;
+            }
+        }
+
+        private void åbenToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (!onceBut)
+            {
+                if (!calendarOpen)
+                {
+                    to.Hide(this);
+                    co.Show(this);
+                    eo.Hide(this);
+                    co.Update(this);
+                    calendarOpen = true;
+                    co.updating = true;
+                }
+            }
+        }
+
+        private void opdaterToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (!onceBut)
+            {
+                to.Hide(this);
+                co.Hide(this);
+                eo.Show(this);
+
+                co.updating = false;
+
+                calendarOpen = false;
+            }
+        }
+
+        private void startI1TimeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!onceBut)
+            {
+                to.Hide(this);
+
+                key.SetValue("TimeInfo", "0:20");
+
+                to.Show(this);
+                co.Hide(this);
+                eo.Hide(this);
+
+                co.updating = false;
+
+                calendarOpen = false;
+            }
+        }
+
+        private void startI2TimerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!onceBut)
+            {
+                to.Hide(this);
+
+                key.SetValue("TimeInfo", "0:10");
+
+                to.Show(this);
+                co.Hide(this);
+                eo.Hide(this);
+
+                co.updating = false;
+
+                calendarOpen = false;
+            }
+        }
+
+        private void åbenPlanToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!calendarOpen)
+            {
+                to.Hide(this);
+                co.Show(this);
+                eo.Hide(this);
+                co.Update(this);
+                calendarOpen = true;
+                co.updating = true;
+            }
+
+            co.OpenCalendar();
+        }
+
+        private void opdaterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!calendarOpen)
+            {
+                to.Hide(this);
+                co.Show(this);
+                eo.Hide(this);
+                co.Update(this);
+                calendarOpen = true;
+                co.updating = true;
+            }
+
+            co.Update(this);
+        }
+
+        private void opdaterToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            eo.Update();
+        }
+
+        private void logUdToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!onceBut)
+            {
+                key.SetValue("Creds", "");
+                logout = true;
+                var login = new LoginForm();
+                login.Show();
+                this.Close();
+            }
         }
         // metode slut
     }

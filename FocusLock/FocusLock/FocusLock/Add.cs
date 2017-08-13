@@ -19,7 +19,7 @@ namespace FocusLock
 
         private void Add_but_Click(object sender, EventArgs e)
         {
-            Programs.addToList(ProgramName_tx.Text, ProcessName_tx.Text, true);
+            Programs.AddToList(ProgramName_tx.Text, ProcessName_tx.Text, true);
             this.Close();
         }
     }

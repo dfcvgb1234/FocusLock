@@ -28,33 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.Selector = new System.Windows.Forms.ComboBox();
-            this.InfoSelectorText = new System.Windows.Forms.Label();
             this.Websites_but = new System.Windows.Forms.Button();
             this.Programs_but = new System.Windows.Forms.Button();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.tidToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.åbenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.startI1TimeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.startI2TimerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.kalenderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.åbenToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.åbenPlanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.opdaterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.eksternToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.opdaterToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.opdaterToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.logUdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // Selector
-            // 
-            this.Selector.FormattingEnabled = true;
-            this.Selector.Items.AddRange(new object[] {
-            "Kalender",
-            "Tid",
-            "Ekstern kontrol"});
-            this.Selector.Location = new System.Drawing.Point(12, 12);
-            this.Selector.Name = "Selector";
-            this.Selector.Size = new System.Drawing.Size(169, 21);
-            this.Selector.TabIndex = 1;
-            this.Selector.SelectedIndexChanged += new System.EventHandler(this.Selector_SelectedIndexChanged);
-            // 
-            // InfoSelectorText
-            // 
-            this.InfoSelectorText.AutoSize = true;
-            this.InfoSelectorText.Location = new System.Drawing.Point(193, 14);
-            this.InfoSelectorText.Name = "InfoSelectorText";
-            this.InfoSelectorText.Size = new System.Drawing.Size(77, 13);
-            this.InfoSelectorText.TabIndex = 2;
-            this.InfoSelectorText.Text = "Vælg indstilling";
             // 
             // Websites_but
             // 
@@ -86,6 +76,111 @@
             this.Programs_but.UseVisualStyleBackColor = true;
             this.Programs_but.Click += new System.EventHandler(this.Programs_but_Click);
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tidToolStripMenuItem,
+            this.kalenderToolStripMenuItem,
+            this.eksternToolStripMenuItem,
+            this.logUdToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(508, 24);
+            this.menuStrip1.TabIndex = 5;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // tidToolStripMenuItem
+            // 
+            this.tidToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.åbenToolStripMenuItem,
+            this.startI1TimeToolStripMenuItem,
+            this.startI2TimerToolStripMenuItem});
+            this.tidToolStripMenuItem.Name = "tidToolStripMenuItem";
+            this.tidToolStripMenuItem.Size = new System.Drawing.Size(36, 20);
+            this.tidToolStripMenuItem.Text = "Tid";
+            // 
+            // åbenToolStripMenuItem
+            // 
+            this.åbenToolStripMenuItem.Name = "åbenToolStripMenuItem";
+            this.åbenToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.åbenToolStripMenuItem.Text = "Åben";
+            this.åbenToolStripMenuItem.Click += new System.EventHandler(this.åbenToolStripMenuItem_Click);
+            // 
+            // startI1TimeToolStripMenuItem
+            // 
+            this.startI1TimeToolStripMenuItem.Name = "startI1TimeToolStripMenuItem";
+            this.startI1TimeToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.startI1TimeToolStripMenuItem.Text = "Start i 1 time";
+            this.startI1TimeToolStripMenuItem.Click += new System.EventHandler(this.startI1TimeToolStripMenuItem_Click);
+            // 
+            // startI2TimerToolStripMenuItem
+            // 
+            this.startI2TimerToolStripMenuItem.Name = "startI2TimerToolStripMenuItem";
+            this.startI2TimerToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.startI2TimerToolStripMenuItem.Text = "Start i 2 timer";
+            this.startI2TimerToolStripMenuItem.Click += new System.EventHandler(this.startI2TimerToolStripMenuItem_Click);
+            // 
+            // kalenderToolStripMenuItem
+            // 
+            this.kalenderToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.åbenToolStripMenuItem1,
+            this.åbenPlanToolStripMenuItem,
+            this.opdaterToolStripMenuItem});
+            this.kalenderToolStripMenuItem.Name = "kalenderToolStripMenuItem";
+            this.kalenderToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
+            this.kalenderToolStripMenuItem.Text = "Kalender";
+            // 
+            // åbenToolStripMenuItem1
+            // 
+            this.åbenToolStripMenuItem1.Name = "åbenToolStripMenuItem1";
+            this.åbenToolStripMenuItem1.Size = new System.Drawing.Size(128, 22);
+            this.åbenToolStripMenuItem1.Text = "Åben";
+            this.åbenToolStripMenuItem1.Click += new System.EventHandler(this.åbenToolStripMenuItem1_Click);
+            // 
+            // åbenPlanToolStripMenuItem
+            // 
+            this.åbenPlanToolStripMenuItem.Name = "åbenPlanToolStripMenuItem";
+            this.åbenPlanToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
+            this.åbenPlanToolStripMenuItem.Text = "Åben plan";
+            this.åbenPlanToolStripMenuItem.Click += new System.EventHandler(this.åbenPlanToolStripMenuItem_Click);
+            // 
+            // opdaterToolStripMenuItem
+            // 
+            this.opdaterToolStripMenuItem.Name = "opdaterToolStripMenuItem";
+            this.opdaterToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
+            this.opdaterToolStripMenuItem.Text = "Opdater";
+            this.opdaterToolStripMenuItem.Click += new System.EventHandler(this.opdaterToolStripMenuItem_Click);
+            // 
+            // eksternToolStripMenuItem
+            // 
+            this.eksternToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.opdaterToolStripMenuItem1,
+            this.opdaterToolStripMenuItem2});
+            this.eksternToolStripMenuItem.Name = "eksternToolStripMenuItem";
+            this.eksternToolStripMenuItem.Size = new System.Drawing.Size(98, 20);
+            this.eksternToolStripMenuItem.Text = "Ekstern kontrol";
+            // 
+            // opdaterToolStripMenuItem1
+            // 
+            this.opdaterToolStripMenuItem1.Name = "opdaterToolStripMenuItem1";
+            this.opdaterToolStripMenuItem1.Size = new System.Drawing.Size(117, 22);
+            this.opdaterToolStripMenuItem1.Text = "Åben";
+            this.opdaterToolStripMenuItem1.Click += new System.EventHandler(this.opdaterToolStripMenuItem1_Click);
+            // 
+            // opdaterToolStripMenuItem2
+            // 
+            this.opdaterToolStripMenuItem2.Name = "opdaterToolStripMenuItem2";
+            this.opdaterToolStripMenuItem2.Size = new System.Drawing.Size(117, 22);
+            this.opdaterToolStripMenuItem2.Text = "Opdater";
+            this.opdaterToolStripMenuItem2.Click += new System.EventHandler(this.opdaterToolStripMenuItem2_Click);
+            // 
+            // logUdToolStripMenuItem
+            // 
+            this.logUdToolStripMenuItem.Name = "logUdToolStripMenuItem";
+            this.logUdToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+            this.logUdToolStripMenuItem.Text = "Log ud";
+            this.logUdToolStripMenuItem.Click += new System.EventHandler(this.logUdToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -93,22 +188,35 @@
             this.ClientSize = new System.Drawing.Size(508, 192);
             this.Controls.Add(this.Programs_but);
             this.Controls.Add(this.Websites_but);
-            this.Controls.Add(this.InfoSelectorText);
-            this.Controls.Add(this.Selector);
+            this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.Text = "FocusLock";
             this.Load += new System.EventHandler(this.Main_Load);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.ComboBox Selector;
-        private System.Windows.Forms.Label InfoSelectorText;
         private System.Windows.Forms.Button Websites_but;
         private System.Windows.Forms.Button Programs_but;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem tidToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem åbenToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem startI1TimeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem startI2TimerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem kalenderToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem åbenToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem åbenPlanToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem opdaterToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem eksternToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem opdaterToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem opdaterToolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem logUdToolStripMenuItem;
     }
 }
 

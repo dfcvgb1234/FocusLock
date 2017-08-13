@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 using System.Net;
+using Microsoft.Win32;
 using System;
 using System.IO;
 
@@ -10,9 +11,11 @@ namespace FocusLock
     {
         string programPath = @"C:\Windows\System32\drivers\etc\External.begeba";
 
+        RegistryKey key;
+
         bool fileFound;
 
-        string currentOptionPath = @"C:\Windows\System32\drivers\etc\CurrentOption.begeba";
+        bool isRunning;
 
         Timer timer = new Timer();
 
@@ -26,37 +29,59 @@ namespace FocusLock
                 File.Delete(programPath);
             }
 
-            // definerer nye controls
-            Label lbl1 = new Label();
-            ComboBox cb1 = new ComboBox();
-
-            // control 1 : Label
-            lbl1.Name = "_External_Hours_lbl";
-            lbl1.Location = new Point(90, 74);
-            lbl1.Size = new Size(200, 150);
-            lbl1.Font = new Font("Arial", 18, FontStyle.Bold);
-            lbl1.Text = "Venter på start";
-
-            string[] collection1 = { "1.V", "1.T", "1.X", "1.Z" };
-            cb1.Name = "_External_Combobox";
-            cb1.Location = new Point(102, 39);
-            cb1.Items.AddRange(collection1);
-
-            // Tilføjer dem til programmet
-            form.Controls.Add(lbl1);
-            form.Controls.Add(cb1);
-
-            cb = cb1;
-
-            timer.Interval = 30000;
-            timer.Tick += Timer_Tick;
-            timer.Start();
-
-            if (!File.Exists(currentOptionPath))
+            if (Program.permission >= 3)
             {
-                File.Create(currentOptionPath).Close();
+                // definerer nye controls
+                Label lbl1 = new Label();
+                ComboBox cb1 = new ComboBox();
+
+                // control 1 : Label
+                lbl1.Name = "_External_Hours_lbl";
+                lbl1.Location = new Point(90, 74);
+                lbl1.Size = new Size(200, 150);
+                lbl1.Font = new Font("Arial", 18, FontStyle.Bold);
+                lbl1.Text = "Venter på start";
+
+                string[] collection1 = { "Bruger1", "Bruger2", "Bruger3", "Bruger4", "Bruger5" };
+                cb1.Name = "_External_Combobox";
+                cb1.Location = new Point(102, 39);
+                cb1.Items.AddRange(collection1);
+
+                // Tilføjer dem til programmet
+                form.Controls.Add(lbl1);
+                form.Controls.Add(cb1);
+
+                cb = cb1;
+
+                timer.Interval = 30000;
+                timer.Tick += Timer_Tick;
+                timer.Start();
+
+                key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock");
             }
-            File.WriteAllText(currentOptionPath, "EXTERNAL");
+            else
+            {
+                Label elbl1 = new Label();
+                Label elbl2 = new Label();
+
+                elbl1.Text = "Du har ikke tiladelse til denne funktion";
+                elbl1.Font = new Font("Microsoft Sans Serif", 12, FontStyle.Bold);
+                elbl1.ForeColor = Color.Red;
+                elbl1.Location = new Point(21, 50);
+                elbl1.Size = new Size(316, 20);
+                elbl1.Name = "error_lbl_1";
+
+                elbl2.Text = "Opgrader din bruger for at få adgang";
+                elbl2.Font = new Font("Microsoft Sans Serif", 12, FontStyle.Bold);
+                elbl2.ForeColor = Color.Red;
+                elbl2.Location = new Point(26, 79);
+                elbl2.Size = new Size(304, 20);
+                elbl2.Name = "error_lbl_2";
+
+                form.Controls.Add(elbl1);
+                form.Controls.Add(elbl2);
+            }
+
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -69,47 +94,48 @@ namespace FocusLock
         // metode til at slette de ting der ikke skal være på skærmen
         public void Hide(Form form)
         {
-            Control[] rems =
+            if (Program.permission >= 3)
             {
+                Control[] rems =
+                {
                 form.Controls["_External_Hours_lbl"],
                 form.Controls["_External_Combobox"]
-            };
-            foreach (Control rem in rems)
-            {
-                form.Controls.Remove(rem);
+                };
+
+                foreach (Control rem in rems)
+                {
+                    form.Controls.Remove(rem);
+                }
+                timer.Stop();
             }
-            timer.Stop();
+            else
+            {
+                Control[] rems =
+                {
+                form.Controls["error_lbl_1"],
+                form.Controls["error_lbl_2"]
+                };
+
+                foreach (Control rem in rems)
+                {
+                    form.Controls.Remove(rem);
+                }
+            }
         }
         // metode slut
 
         public void Update()
         {
+            Console.WriteLine("LOOKING FOR FILE");
+
             string findingFile = "";
 
-            switch(cb.SelectedIndex)
-            {
-                case 0:
-                    findingFile = "V";
-                    break;
-
-                case 1:
-                    findingFile = "T";
-                    break;
-
-                case 2:
-                    findingFile = "X";
-                    break;
-
-                case 3:
-                    findingFile = "Z";
-                    break;
-            }
             try
             {
                 using (WebClient webClient = new WebClient())
                 {
                     webClient.Credentials = new NetworkCredential("focuslock.dk", "bagebe");
-                    webClient.DownloadFile("ftp://ftp.focuslock.dk/ftp/" + findingFile , programPath);
+                    webClient.DownloadFile("ftp://ftp.focuslock.dk/ftp/FocusLock" + "/" + cb.SelectedItem.ToString() + "/" + cb.SelectedItem.ToString() + ".txt", programPath);
                 }
                 fileFound = true;
             }
@@ -119,14 +145,22 @@ namespace FocusLock
                 fileFound = false;
             }
 
-            if(fileFound)
+            if(fileFound && isRunning == false)
             {
-                MainForm.startProgram(true);
+                MainForm.StartProgram(true);
+
+                if (!MainForm.KeyExists("CurrentOption"))
+                {
+                    key.SetValue("CurrentOption", "");
+                }
+                key.SetValue("CurrentOption", "EXTERNAL");
+                isRunning = true;
             }
 
-            if(!fileFound)
+            if(!fileFound && isRunning == true)
             {
-                MainForm.startProgram(false);
+                MainForm.StartProgram(false);
+                isRunning = false;
             }
         }
     }

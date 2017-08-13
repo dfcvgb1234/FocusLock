@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using Microsoft.Win32;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -17,6 +18,8 @@ namespace FocusLock
         {
             InitializeComponent();
         }
+
+        RegistryKey key;
 
         // definere hvor mange rows og columns der skal være
         const int RowCount = 24;
@@ -40,24 +43,29 @@ namespace FocusLock
         // metode til at fortælle hvad der skal ske når denne form den åbnes
         private void Calendar_Load(object sender, EventArgs e)
         {
+
+            key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock");
+
             for (int i = 0; i < RowCount; i++)
             {
                 for (int j = 0; j < ColumnCount; j++)
                 {
                     // generer knapperne
-                    Label lbl = new Label();
-                    lbl.Size = new Size(20, 20);
-                    lbl.Name = i + ":" + j;
-                    lbl.BackColor = Color.LightGray;
-                    lbl.Location = new Point(i * 20, j * 20);
+                    Label lbl = new Label()
+                    {
+                        Size = new Size(20, 20),
+                        Name = i + ":" + j,
+                        BackColor = Color.LightGray,
+                        Location = new Point(i * 20, j * 20)
+                    };
                     lbl.MouseClick += Lbl_MouseClick;
                     lbl.BorderStyle = BorderStyle.FixedSingle;
                     GridContainer.Controls.Add(lbl);
                 }
             }
-            if (File.Exists(@"C:\Windows\System32\drivers\etc\DateInfo.begeba"))
+            if (key.GetValue("DateInfo") != null)
             {
-                string fileText = File.ReadAllText(@"C:\Windows\System32\drivers\etc\DateInfo.begeba");
+                string fileText = key.GetValue("DateInfo").ToString();
                 string[] cube = fileText.Split(';');
                 string[] splitIndex;
                 Size size = new Size(12, 20);
@@ -89,8 +97,8 @@ namespace FocusLock
 
             else
             {
-                File.Create(@"C:\Windows\System32\drivers\etc\DateInfo.begeba");
-                string fileText = File.ReadAllText(@"C:\Windows\System32\drivers\etc\DateInfo.begeba");
+                key.SetValue("DateInfo", " ");
+                string fileText = key.GetValue("DateInfo").ToString();
                 string[] cube = fileText.Split(';');
 
 
@@ -144,9 +152,9 @@ namespace FocusLock
 
             RenameGrid(lbl);
 
-            if (File.Exists(@"C:\Windows\System32\drivers\etc\DateInfo.begeba"))
+            if (key.GetValue("DateInfo") != null)
             {
-                File.Delete(@"C:\Windows\System32\drivers\etc\DateInfo.begeba");
+                key.SetValue("DateInfo", "");
             }
 
             // gemmer det i en fil
@@ -154,15 +162,18 @@ namespace FocusLock
             {
                 if (labl.BackColor == Color.CadetBlue && labl.Size == realSize)
                 {
-                    File.AppendAllText(@"C:\Windows\System32\drivers\etc\DateInfo.begeba", labl.Name + ",1" + ";");
+                    key.SetValue("DateInfo", key.GetValue("DateInfo").ToString() + labl.Name + ",1" + ";");
+                    //File.AppendAllText(@"C:\Windows\System32\drivers\etc\DateInfo.begeba", labl.Name + ",1" + ";");
                 }
                 if (labl.BackColor == Color.CadetBlue && labl.Size == size)
                 {
-                    File.AppendAllText(@"C:\Windows\System32\drivers\etc\DateInfo.begeba", labl.Name + ",2" + ";");
+                    key.SetValue("DateInfo", key.GetValue("DateInfo").ToString() + labl.Name + ",2" + ";");
+                    //File.AppendAllText(@"C:\Windows\System32\drivers\etc\DateInfo.begeba", labl.Name + ",2" + ";");
                 }
-                else if (labl.BackColor != Color.CadetBlue && File.Exists(@"C:\Windows\System32\drivers\etc\DateInfo.begeba") == false)
+                else if (labl.BackColor != Color.CadetBlue && key.GetValue("DateInfo") == null)
                 {
-                    File.Create(@"C:\Windows\System32\drivers\etc\DateInfo.begeba").Close();
+                    key.SetValue("DateInfo", "");
+                    //File.Create(@"C:\Windows\System32\drivers\etc\DateInfo.begeba").Close();
                 }
             }
         }

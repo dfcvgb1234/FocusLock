@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 namespace FocusLock
 {
@@ -10,9 +11,7 @@ namespace FocusLock
         // Definerer den timer som der bruges
         Timer timer = new Timer();
 
-        string currentOptionPath = @"C:\Windows\System32\drivers\etc\CurrentOption.begeba";
-
-        string timeInfoPath = @"C:\Windows\System32\drivers\etc\TimeInfo.begeba";
+        RegistryKey key = null;
 
         // Definerer minutter og timer som variabler
         int minutes;
@@ -99,27 +98,27 @@ namespace FocusLock
             text2 = tx2;
             text3 = tx3;
 
-            if (!File.Exists(currentOptionPath))
+            key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock");
+
+           if(!MainForm.KeyExists("TimeInfo"))
             {
-                File.Create(currentOptionPath).Close();
+                key.SetValue("TimeInfo", "0:0");
             }
-            File.WriteAllText(currentOptionPath, "TIME");
 
-            if(File.Exists(timeInfoPath))
+            if (!string.IsNullOrWhiteSpace(key.GetValue("TimeInfo").ToString()))
             {
-                if (!string.IsNullOrWhiteSpace(File.ReadAllText(timeInfoPath)))
+                Console.WriteLine(key.GetValue("TimeInfo").ToString());
+                string[] splitText = key.GetValue("TimeInfo").ToString().Split(':');
+                hours = int.Parse(splitText[0]);
+                minutes = int.Parse(splitText[1]);
+                if (hours <= 0 && minutes <= 0)
                 {
-                    string[] splitText = File.ReadAllText(timeInfoPath).Split(':');
-                    hours = int.Parse(splitText[0]);
-                    minutes = int.Parse(splitText[1]);
-                    if (hours <= 0 && minutes <= 0)
-                    {
-
-                    }
-                    else
-                    {
-                        but1.PerformClick();
-                    }
+                }
+                else
+                {
+                    tx1.Text = ""+hours;
+                    tx2.Text = ""+minutes;
+                    but1.PerformClick();
                 }
             }
         }
@@ -175,16 +174,29 @@ namespace FocusLock
         // metoder der fortæller hvad der skal gøres når der bliver trykket på start knappen
         private void But1_Click(object sender, System.EventArgs e)
         {
+            text3.Text = string.Format("{0} Timer : {1} Minutter", hours, minutes);
+            key.SetValue("CurrentOption", "TIME");
+
             Console.WriteLine("pressed");
             if (!onceBut)
             {
+                try
+                {
+                    minutes = Int32.Parse(text2.Text);
+                    hours = Int32.Parse(text1.Text);
+                }
+                catch
+                {
+                    MessageBox.Show("Du skal skrive noget i begge felter", "STOP!",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                }
+
                 // starter timeren
                 timer.Interval = 1000; // ændre til hvor lang tid et minut det tager
                 timer.Tick += Timer_Tick;
                 timer.Start();
 
                 // starter programmet
-                MainForm.startProgram(true);
+                MainForm.StartProgram(true);
             }
             onceBut = true;
         }
@@ -195,42 +207,38 @@ namespace FocusLock
         private void Timer_Tick(object sender, System.EventArgs e)
         {
 
-            Console.WriteLine("TICK!");
+            // stopper programmet når der ikke er mere tid tilbage
+            if (hours <= 0 && minutes <= 0)
+            {
+                timer.Stop();
+                //text3.Text = string.Format("{0} Timer : {1} Minutter", 0, 0);
+                MainForm.StartProgram(false);
+                onceBut = false;
+                timer.Tick -= Timer_Tick;
+                return;
+            }
+
+            // resetter minutter til 60 og trækker en fra timer
+            if (minutes <= 0)
+            {
+                hours--;
+                minutes = 60;
+            }
 
             // opdaterer textboxen så man kan se hvor lang tid der er tilbage
             minutes--;
             text3.Text = string.Format("{0} Timer : {1} Minutter", hours, minutes);
 
-            if (!File.Exists(timeInfoPath))
-            {
-                File.Create(timeInfoPath).Close();
-            }
-            File.WriteAllText(timeInfoPath, hours + ":" + minutes);
+            key.SetValue("TimeInfo", hours + ":" + minutes);
 
-            // stopper programmet når der ikke er mere tid tilbage
-            if (hours == 0 && minutes == 0)
-            {
-                timer.Stop();
-                //text3.Text = string.Format("{0} Timer : {1} Minutter", 0, 0);
-                MainForm.startProgram(false);
-                onceBut = false;
-                File.Delete(timeInfoPath);
-            }
-
-            // resetter minutter til 60 og trækker en fra timer
-            if (minutes == 0)
-            {
-                hours--;
-                minutes = 60;
-            }
         }
         // metode slut
 
         // fjerner alle de controls som ikke skal være på formen
         public void Hide(Form form)
         {
-            MainForm.minutes = minutes;
-            MainForm.hours = hours;
+            MainForm.Minutes = minutes;
+            MainForm.Hours = hours;
             Control[] rems =
             {
                 form.Controls["_time_Hours"],

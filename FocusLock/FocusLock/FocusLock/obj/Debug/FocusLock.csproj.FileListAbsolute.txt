@@ -22,3 +22,18 @@ C:\Users\Mc IceBerg\Desktop\FocusLock\FocusLock\obj\Debug\FocusLock.Calendar.res
 C:\Users\Mc IceBerg\Desktop\FocusLock\FocusLock\obj\Debug\FocusLock.MainForm.resources
 C:\Users\Mc IceBerg\Desktop\FocusLock\FocusLock\obj\Debug\FocusLock.Properties.Resources.resources
 C:\Users\Mc IceBerg\Desktop\FocusLock\FocusLock\obj\Debug\FocusLock.csproj.GenerateResource.Cache
+C:\Development\C#_development\FocusLock\FocusLock\FocusLock\bin\Debug\FocusLock.exe.config
+C:\Development\C#_development\FocusLock\FocusLock\FocusLock\bin\Debug\FocusLock.exe
+C:\Development\C#_development\FocusLock\FocusLock\FocusLock\bin\Debug\FocusLock.pdb
+C:\Development\C#_development\FocusLock\FocusLock\FocusLock\obj\Debug\FocusLock.csprojResolveAssemblyReference.cache
+C:\Development\C#_development\FocusLock\FocusLock\FocusLock\obj\Debug\Interop.IWshRuntimeLibrary.dll
+C:\Development\C#_development\FocusLock\FocusLock\FocusLock\obj\Debug\FocusLock.csproj.ResolveComReference.cache
+C:\Development\C#_development\FocusLock\FocusLock\FocusLock\obj\Debug\FocusLock.Add.resources
+C:\Development\C#_development\FocusLock\FocusLock\FocusLock\obj\Debug\FocusLock.Calendar.resources
+C:\Development\C#_development\FocusLock\FocusLock\FocusLock\obj\Debug\FocusLock.MainForm.resources
+C:\Development\C#_development\FocusLock\FocusLock\FocusLock\obj\Debug\FocusLock.Programs.resources
+C:\Development\C#_development\FocusLock\FocusLock\FocusLock\obj\Debug\FocusLock.Properties.Resources.resources
+C:\Development\C#_development\FocusLock\FocusLock\FocusLock\obj\Debug\FocusLock.Websites.resources
+C:\Development\C#_development\FocusLock\FocusLock\FocusLock\obj\Debug\FocusLock.csproj.GenerateResource.Cache
+C:\Development\C#_development\FocusLock\FocusLock\FocusLock\obj\Debug\FocusLock.exe
+C:\Development\C#_development\FocusLock\FocusLock\FocusLock\obj\Debug\FocusLock.pdb

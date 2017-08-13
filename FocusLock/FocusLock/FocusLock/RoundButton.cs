@@ -48,7 +48,7 @@ namespace RoundButton
         {
 
             base.OnPaint(pevent);
-            int CornerRadius = 18;
+            int CornerRadius = 100;
             Color FillColor = Color.White;
             Pen DrawPen = new Pen(BorderColor);
             GraphicsPath gfxPath_mod = new GraphicsPath();

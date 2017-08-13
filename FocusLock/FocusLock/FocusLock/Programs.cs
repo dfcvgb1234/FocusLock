@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
+using Microsoft.Win32;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ namespace FocusLock
     public partial class Programs : Form
     {
         bool[] checkedPrograms = new bool[Program.checkedState.Length];
+
+        RegistryKey key;
 
         public static CheckedListBox itemlistbox;
 
@@ -34,6 +37,8 @@ namespace FocusLock
 
         private void Programs_Load(object sender, EventArgs e)
         {
+            key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock");
+
             int k = 0;
             foreach(string j in Program.checkedState)
             {
@@ -62,7 +67,7 @@ namespace FocusLock
             add_form.Show();
         }
 
-        public static void addToList(string ProgramName, string ProcessName, bool checkedState)
+        public static void AddToList(string ProgramName, string ProcessName, bool checkedState)
         {
             tmpprocesslist.Add(ProcessName);
             itemlistbox.Items.Add(ProgramName, true);
@@ -70,9 +75,9 @@ namespace FocusLock
 
         private void Save_but_Click(object sender, EventArgs e)
         {
-            if (File.Exists(@"C:\Windows\System32\drivers\etc\Programs.begeba"))
+            if (MainForm.KeyExists("Programs"))
             {
-                File.Delete(@"C:\Windows\System32\drivers\etc\Programs.begeba");
+                key.SetValue("Programs", "");
             }
 
             for (int i = 0; i < ItemBox.Items.Count; i++)
@@ -86,8 +91,10 @@ namespace FocusLock
                 {
                     check = "FALSE";
                 }
+
+                key.SetValue("Programs", key.GetValue("Programs").ToString() + ItemBox.Items[i] + "," + tmpprocesslist[i] + "," + check + ";");
                 
-                File.AppendAllText(@"C:\Windows\System32\drivers\etc\Programs.begeba", ItemBox.Items[i] + "," + tmpprocesslist[i] + "," + check + ";");
+                //File.AppendAllText(@"C:\Windows\System32\drivers\etc\Programs.begeba", ItemBox.Items[i] + "," + tmpprocesslist[i] + "," + check + ";");
             }
             File.AppendAllText(@"C:\Windows\System32\drivers\etc\Changed.begeba", "true");
             MessageBox.Show("Genstart programmet for at ændringerne træder i kraft", "HUSK!", MessageBoxButtons.OK, MessageBoxIcon.Information);
