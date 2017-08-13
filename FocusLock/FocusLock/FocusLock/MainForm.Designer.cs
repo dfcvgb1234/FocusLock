@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.Websites_but = new System.Windows.Forms.Button();
             this.Programs_but = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -53,6 +54,7 @@
             this.Websites_but.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.Websites_but.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.Websites_but.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Websites_but.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Websites_but.Location = new System.Drawing.Point(358, 12);
             this.Websites_but.Name = "Websites_but";
             this.Websites_but.Size = new System.Drawing.Size(138, 48);
@@ -68,6 +70,7 @@
             this.Programs_but.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.Programs_but.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.Programs_but.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Programs_but.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Programs_but.Location = new System.Drawing.Point(358, 66);
             this.Programs_but.Name = "Programs_but";
             this.Programs_but.Size = new System.Drawing.Size(138, 48);
@@ -95,8 +98,9 @@
             this.åbenToolStripMenuItem,
             this.startI1TimeToolStripMenuItem,
             this.startI2TimerToolStripMenuItem});
+            this.tidToolStripMenuItem.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Bold);
             this.tidToolStripMenuItem.Name = "tidToolStripMenuItem";
-            this.tidToolStripMenuItem.Size = new System.Drawing.Size(36, 20);
+            this.tidToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.tidToolStripMenuItem.Text = "Tid";
             // 
             // åbenToolStripMenuItem
@@ -126,8 +130,9 @@
             this.åbenToolStripMenuItem1,
             this.åbenPlanToolStripMenuItem,
             this.opdaterToolStripMenuItem});
+            this.kalenderToolStripMenuItem.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Bold);
             this.kalenderToolStripMenuItem.Name = "kalenderToolStripMenuItem";
-            this.kalenderToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
+            this.kalenderToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
             this.kalenderToolStripMenuItem.Text = "Kalender";
             // 
             // åbenToolStripMenuItem1
@@ -156,8 +161,9 @@
             this.eksternToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.opdaterToolStripMenuItem1,
             this.opdaterToolStripMenuItem2});
+            this.eksternToolStripMenuItem.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Bold);
             this.eksternToolStripMenuItem.Name = "eksternToolStripMenuItem";
-            this.eksternToolStripMenuItem.Size = new System.Drawing.Size(98, 20);
+            this.eksternToolStripMenuItem.Size = new System.Drawing.Size(103, 20);
             this.eksternToolStripMenuItem.Text = "Ekstern kontrol";
             // 
             // opdaterToolStripMenuItem1
@@ -176,8 +182,9 @@
             // 
             // logUdToolStripMenuItem
             // 
+            this.logUdToolStripMenuItem.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Bold);
             this.logUdToolStripMenuItem.Name = "logUdToolStripMenuItem";
-            this.logUdToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+            this.logUdToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
             this.logUdToolStripMenuItem.Text = "Log ud";
             this.logUdToolStripMenuItem.Click += new System.EventHandler(this.logUdToolStripMenuItem_Click);
             // 
@@ -190,6 +197,7 @@
             this.Controls.Add(this.Websites_but);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.Text = "FocusLock";

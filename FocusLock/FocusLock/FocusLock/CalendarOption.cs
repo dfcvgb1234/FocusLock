@@ -80,24 +80,30 @@ namespace FocusLock
                 Label elbl2 = new Label();
 
                 elbl1.Text = "Du har ikke tiladelse til denne funktion";
-                elbl1.Font = new Font("Microsoft Sans Serif", 12, FontStyle.Bold);
+                elbl1.Font = new Font("Century Gothic", 12, FontStyle.Bold);
                 elbl1.ForeColor = Color.Red;
                 elbl1.Location = new Point(21, 50);
                 elbl1.Size = new Size(316, 20);
                 elbl1.Name = "error_lbl_1";
 
-                elbl2.Text = "Opgrader din bruger for at få adgang";
-                elbl2.Font = new Font("Microsoft Sans Serif", 12, FontStyle.Bold);
+                elbl2.Text = "Klik her for at opgradere din bruger";
+                elbl2.Font = new Font("Century Gothic", 11, FontStyle.Bold |FontStyle.Underline);
                 elbl2.ForeColor = Color.Red;
-                elbl2.Location = new Point(26, 79);
-                elbl2.Size = new Size(304, 20);
+                elbl2.Location = new Point(41, 79);
+                elbl2.Size = new Size(315, 20);
+                elbl2.Click += Elbl2_Click;
                 elbl2.Name = "error_lbl_2";
 
                 form.Controls.Add(elbl1);
                 form.Controls.Add(elbl2);
             }
-
         }
+
+        private void Elbl2_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://www.paypal.com");
+        }
+
         // metode slut
 
         // metode der opfanger når knapen bliver trykket på

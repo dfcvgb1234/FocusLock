@@ -22,6 +22,7 @@ namespace FocusLock
         TextBox text2;
         TextBox text3;
 
+        Font font = new Font("Century Gothic", 8, FontStyle.Bold);
         // sørger for at man kun kan trykke på knappen en gang
         bool onceBut = false;
 
@@ -41,49 +42,60 @@ namespace FocusLock
             tx1.Location = new Point(27, 67);
             tx1.Size = new Size(107, 20);
             tx1.TextChanged += Tx1_TextChanged;
+            tx1.Font = font;
+            tx1.ForeColor = Color.FromArgb(252, 107, 10);
             tx1.Name = "_time_Hours";
 
             // control 2 : TextBox
             tx2.Location = new Point(181, 67);
             tx2.Size = new Size(107, 20);
             tx2.TextChanged += Tx2_TextChanged;
+            tx2.Font = font;
+            tx2.ForeColor = Color.FromArgb(252, 107, 10);
             tx2.Name = "_time_Minutes";
 
             // control 3 : TextBox
             tx3.Location = new Point(101, 133);
             tx3.Size = new Size(119, 20);
             tx3.Name = "_time_Time_left";
+            tx3.Font = font;
+            tx3.TextAlign = HorizontalAlignment.Center;
+            tx3.ForeColor = Color.FromArgb(252, 107, 10);
             tx3.Text = string.Format("{0} Timer : {1} Minutter",0,0);
 
             // control 4 : Label
             lbl1.Name = "_time_Hours_lbl";
             lbl1.Location = new Point(60, 48);
             lbl1.Size = new Size(35, 13);
+            lbl1.Font = font;
             lbl1.Text = "Timer";
 
             // control 5 : Label
             lbl2.Name = "_time_Minutes_lbl";
             lbl2.Location = new Point(212, 48);
-            lbl2.Size = new Size(45, 13);
+            lbl2.Size = new Size(50, 13);
+            lbl2.Font = font;
             lbl2.Text = "Minutter";
 
             // control 6 : Label
             lbl3.Name = "_time_left_lbl";
             lbl3.Location = new Point(127, 113);
             lbl3.Size = new Size(127, 113);
+            lbl3.Font = font;
             lbl3.Text = "Tid tilbage";
 
             // control 7 : Button
             but1.Name = "_time_Start_but";
             but1.FlatStyle = FlatStyle.Flat;
-            but1.FlatAppearance.BorderColor = Color.Black;
-            but1.FlatAppearance.BorderSize = 2;
-            but1.FlatAppearance.MouseDownBackColor = Color.Silver;
-            but1.FlatAppearance.MouseOverBackColor = Color.WhiteSmoke;
-            but1.Location = new Point(358, 132);
-            but1.Size = new Size(138,48);
+            //but1.FlatAppearance.BorderColor = Color.Transparent;
+            but1.FlatAppearance.BorderSize = 0;
+            but1.FlatAppearance.MouseDownBackColor = Color.Transparent;
+            but1.FlatAppearance.MouseOverBackColor = Color.Transparent;
+            but1.Location = new Point(397, 130);
+            but1.Image = Image.FromFile(@"C:\Users\InsertName\Desktop\Development\C#_Development\Github\FocusLock\FocusLock\FocusLock\FocusLock\bin\Release\Rescources\Lock.png");
+            but1.Size = new Size(50,50);
             but1.Click += But1_Click; ;
-            but1.Text = "Start";
+            //but1.Text = "Start";
 
             // Tilføjer dem til programmet
             form.Controls.Add(tx1);
@@ -174,6 +186,7 @@ namespace FocusLock
         // metoder der fortæller hvad der skal gøres når der bliver trykket på start knappen
         private void But1_Click(object sender, System.EventArgs e)
         {
+            text3.Focus();
             text3.Text = string.Format("{0} Timer : {1} Minutter", hours, minutes);
             key.SetValue("CurrentOption", "TIME");
 

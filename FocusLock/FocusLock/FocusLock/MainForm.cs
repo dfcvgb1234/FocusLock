@@ -370,6 +370,10 @@ namespace FocusLock
                         p.Kill();
                     }
 
+                    Button but = (Button)GetCurrentForm().Controls["_time_Start_but"];
+
+                    but.Image = Image.FromFile(@"C:\Users\InsertName\Desktop\Development\C#_Development\Github\FocusLock\FocusLock\FocusLock\FocusLock\bin\Release\Rescources\Lock_open.png");
+
                     onceBut = true;
                     StopProcesses(checkedPrograms);
 
@@ -394,6 +398,10 @@ namespace FocusLock
             }
             if (!isTime)
             {
+                Button but = (Button)GetCurrentForm().Controls["_time_Start_but"];
+
+                but.Image = Image.FromFile(@"C:\Users\InsertName\Desktop\Development\C#_Development\Github\FocusLock\FocusLock\FocusLock\FocusLock\bin\Release\Rescources\Lock.png");
+
                 butPressed = false;
                 System.IO.File.Delete(@"C:\Windows\System32\drivers\etc\hosts");
                 System.IO.File.Delete(Environment.GetFolderPath(Environment.SpecialFolder.Startup) + @"\FocusLock.lnk");
@@ -405,6 +413,11 @@ namespace FocusLock
             }
         }
         // metode slut
+
+        public static Form GetCurrentForm()
+        {
+            return ActiveForm;
+        }
 
         // metode der sletter det data som er blevet lagt ind i registry
         public static void DeleteRegistryData(object[] Processes)
@@ -504,8 +517,8 @@ namespace FocusLock
                 if (!calendarOpen)
                 {
                     to.Hide(this);
-                    co.Show(this);
                     eo.Hide(this);
+                    co.Show(this);
                     co.Update(this);
                     calendarOpen = true;
                     co.updating = true;
