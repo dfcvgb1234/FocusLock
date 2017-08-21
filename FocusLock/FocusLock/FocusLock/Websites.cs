@@ -53,6 +53,15 @@ namespace FocusLock
                 key.SetValue("HOST", "");
             }
 
+            if(!MainForm.KeyExists("ChangedHost"))
+            {
+                key.SetValue("ChangedHost", "TRUE");
+            }
+            else
+            {
+                key.SetValue("ChangedHost", "TRUE");
+            }
+
             foreach (string j in list.Items)
             {
                 key.SetValue("HOST", key.GetValue("HOST").ToString() + "" + j + ";");
@@ -89,6 +98,12 @@ namespace FocusLock
             {
                 list.SetSelected(index, true);
             }
+        }
+
+        private void Reset_but_Click(object sender, EventArgs e)
+        {
+            key.SetValue("ChangedHost", "FALSE");
+            MessageBox.Show("Genstart programmet for at ændringerne træder i kraft", "HUSK!", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

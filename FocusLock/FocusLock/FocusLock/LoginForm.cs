@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -59,11 +60,15 @@ namespace FocusLock
         {
             string name = User_txt.Text;
 
-            string pass = Pass_txt.Text;
+            string pass = ComputeHash(Pass_txt.Text, "e0071fa9");
+
+            Console.WriteLine(pass);
 
             if (name != "Admin" && pass != "Bagebe")
             {
-                string response = SendRequest("http://focuslock.dk/ftp/SendPHPRequest.php?name=" + name + "&" + "pass=" + pass);
+                string response = SendRequest("https://focuslock.dk/php/permRequest.php?email=" + name + "&" + "pass=" + pass);
+
+                Console.WriteLine(response);
 
                 if (response != null)
                 {
@@ -116,7 +121,31 @@ namespace FocusLock
                 this.FindForm().Close();
             }
         }
-        
+
+        public static string ComputeHash(string plainText, string salt)
+        {
+            // Convert plain text into a byte array.
+            byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+            byte[] saltBytes = Encoding.UTF8.GetBytes(salt);
+
+            SHA256Managed hash = new SHA256Managed();
+
+            // Compute hash value of salt.
+            byte[] plainHash = hash.ComputeHash(plainTextBytes);
+
+            byte[] concat = new byte[plainHash.Length + saltBytes.Length];
+
+            System.Buffer.BlockCopy(saltBytes, 0, concat, 0, saltBytes.Length);
+            System.Buffer.BlockCopy(plainHash, 0, concat, saltBytes.Length, plainHash.Length);
+
+            byte[] tHashBytes = hash.ComputeHash(concat);
+
+            // Convert result into a base64-encoded string.
+            string hashValue = Convert.ToBase64String(tHashBytes);
+
+            // Return the result.
+            return hashValue;
+        }
 
         private string SendRequest(string url)
         {

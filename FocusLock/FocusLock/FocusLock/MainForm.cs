@@ -11,6 +11,7 @@ using Microsoft.Win32;
 using System.Threading;
 using System.Windows.Forms;
 using IWshRuntimeLibrary;
+using System.Net;
 
 namespace FocusLock
 {
@@ -21,6 +22,16 @@ namespace FocusLock
 
         public static bool calendarOpen = false;
 
+        static Form form_main;
+
+        static Process[] chrome;
+
+        NotifyIcon ni;
+
+        public static ComboBox cb = new ComboBox();
+
+        static Button focusBut;
+
         public static bool logout = false;
 
         TimeOption to = new TimeOption();
@@ -30,10 +41,11 @@ namespace FocusLock
         RegistryKey key;
 
         // Timer der kører hvert minut
-        System.Windows.Forms.Timer timer;
+        public static System.Windows.Forms.Timer externTimer = new System.Windows.Forms.Timer();
+
 
         // Sørger for at der kun er visse ting der bliver gjort en gang
-        static bool onceBut = false;
+        static bool onceBut = new bool();
 
         // en variabel som fortæller om programmet kører i admin
         public bool isElevated;
@@ -50,26 +62,11 @@ namespace FocusLock
         public MainForm()
         {
             // fortæller når programmet er bliver lukket
-            FormClosed += Main_FormClosed;
+            FormClosing += MainForm_FormClosing;
             InitializeComponent();
-            // definere den nye timer til at køre hvert minut
-            timer = new System.Windows.Forms.Timer();
-            timer.Tick += new EventHandler(Timer_tick);
-            timer.Interval = 10000; // ændre dette til 60000 som er et minut
-            timer.Start();
-            // timer defination slut
         }
 
-        // Hvad der sker når der er gået det tid som der er blevet definerert hos timeren
-        private void Timer_tick(object sender, EventArgs e)
-        {
-            // trykker på en knap i en anden thread, dette er Thread-safe
-            //this.Invoke(new Action(() => { button1.PerformClick(); }));
-        }
-        // metode slut
-
-        // fortæller hvad der skal ske når programmet lukkes
-        private void Main_FormClosed(object sender, FormClosedEventArgs e)
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             // bruger lukning
             if (e.CloseReason == CloseReason.UserClosing)
@@ -81,7 +78,8 @@ namespace FocusLock
                 }
                 else
                 {
-
+                    e.Cancel = true;
+                    WindowState = FormWindowState.Minimized;
                 }
             }
             // windows lukning
@@ -90,7 +88,6 @@ namespace FocusLock
                 Environment.Exit(1);
             }
         }
-        // metode slut
 
         // genererer vores fulde liste af de programmer der skal lukkes
         void CreateProgramArray(object[] checkedArray, object[] programArray)
@@ -114,8 +111,7 @@ namespace FocusLock
         // metoden der sørger for at processerne bliver checket og lukket hvis de skal lukkes
         public static void StopProcesses(object[] Processes)
         {
-            Microsoft.Win32.RegistryKey cmd;
-            Microsoft.Win32.RegistryKey task;
+            RegistryKey task;
 
             //cmd = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\cmd.exe");
             task = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\taskmgr.exe");
@@ -156,6 +152,11 @@ namespace FocusLock
         // Hvad der skal ske når programmet åbnes
         private void Main_Load(object sender, EventArgs e)
         {
+            focusBut = Programs_but;
+
+            ni = Tray_icon;
+
+            form_main = ActiveForm;
 
             logout = false;
 
@@ -357,30 +358,36 @@ namespace FocusLock
         // metode slut
 
         // metode der starter programmet og stopper det
-        public static void StartProgram(bool isTime)
+        public static void StartProgram(bool isTime = false)
         {
             if (isTime)
             {
                 Console.WriteLine("Program has been started");
-                if(!onceBut)
+                onceBut = new bool();
+                if (!onceBut)
                 {
-                    Process[] chrome = Process.GetProcessesByName("chrome");
-                    foreach(Process p in chrome)
+                    if (Process.GetProcessesByName("chrome") != null || Process.GetProcessesByName("chrome").Length != 0)
                     {
-                        p.Kill();
+                        chrome = new Process[Process.GetProcessesByName("chrome").Length];
+                        chrome = Process.GetProcessesByName("chrome");
+                        foreach (Process p in chrome)
+                        {
+                            p.Kill();
+                        }
                     }
+                    if (GetCurrentForm().Controls["_time_Start_but"] != null)
+                    {
+                        Button but = (Button)GetCurrentForm().Controls["_time_Start_but"];
 
-                    Button but = (Button)GetCurrentForm().Controls["_time_Start_but"];
-
-                    but.Image = Image.FromFile(@"C:\Users\InsertName\Desktop\Development\C#_Development\Github\FocusLock\FocusLock\FocusLock\FocusLock\bin\Release\Rescources\Lock_open.png");
-
-                    onceBut = true;
+                        but.Image = Image.FromFile(Environment.CurrentDirectory + @"\Rescources\Lock.png");
+                    }
+                        onceBut = true;
                     StopProcesses(checkedPrograms);
 
                     butPressed = true;
                     CreateShortcut("FocusLock", Environment.GetFolderPath(Environment.SpecialFolder.Startup), AppDomain.CurrentDomain.BaseDirectory + "FocusLock.exe");
 
-                    if(!KeyExists("HOST"))
+                    if (!KeyExists("HOST"))
                     {
                         Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("HOST", "");
                     }
@@ -398,9 +405,12 @@ namespace FocusLock
             }
             if (!isTime)
             {
-                Button but = (Button)GetCurrentForm().Controls["_time_Start_but"];
+                if (GetCurrentForm().Controls["_time_Start_but"] != null)
+                {
+                    Button but = (Button)GetCurrentForm().Controls["_time_Start_but"];
 
-                but.Image = Image.FromFile(@"C:\Users\InsertName\Desktop\Development\C#_Development\Github\FocusLock\FocusLock\FocusLock\FocusLock\bin\Release\Rescources\Lock.png");
+                    but.Image = Image.FromFile(Environment.CurrentDirectory + @"\Rescources\Lock_open.png");
+                }
 
                 butPressed = false;
                 System.IO.File.Delete(@"C:\Windows\System32\drivers\etc\hosts");
@@ -417,6 +427,11 @@ namespace FocusLock
         public static Form GetCurrentForm()
         {
             return ActiveForm;
+        }
+
+        public static void ChangeWindowSize()
+        {
+            focusBut.Focus();
         }
 
         // metode der sletter det data som er blevet lagt ind i registry
@@ -621,6 +636,11 @@ namespace FocusLock
                 login.Show();
                 this.Close();
             }
+        }
+
+        private void Tray_icon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            this.Show();
         }
         // metode slut
     }

@@ -92,7 +92,7 @@ namespace FocusLock
             but1.FlatAppearance.MouseDownBackColor = Color.Transparent;
             but1.FlatAppearance.MouseOverBackColor = Color.Transparent;
             but1.Location = new Point(397, 130);
-            but1.Image = Image.FromFile(@"C:\Users\InsertName\Desktop\Development\C#_Development\Github\FocusLock\FocusLock\FocusLock\FocusLock\bin\Release\Rescources\Lock.png");
+            but1.Image = Image.FromFile(Environment.CurrentDirectory + @"\Rescources\Lock_open.png");
             but1.Size = new Size(50,50);
             but1.Click += But1_Click; ;
             //but1.Text = "Start";
@@ -136,7 +136,10 @@ namespace FocusLock
         }
 
         // metode slut
-
+        public void ChangeWindowSize(Form form)
+        {
+            form.WindowState = FormWindowState.Normal;
+        }
         // metode der fortæller når man er igang med at skrive i textbox 2
         private void Tx2_TextChanged(object sender, System.EventArgs e)
         {
@@ -223,6 +226,11 @@ namespace FocusLock
             // stopper programmet når der ikke er mere tid tilbage
             if (hours <= 0 && minutes <= 0)
             {
+                FormCollection col = Application.OpenForms;
+                foreach (Form form in col)
+                {
+                    form.Activate();
+                }
                 timer.Stop();
                 //text3.Text = string.Format("{0} Timer : {1} Minutter", 0, 0);
                 MainForm.StartProgram(false);

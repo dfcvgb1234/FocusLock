@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.Websites_but = new System.Windows.Forms.Button();
             this.Programs_but = new System.Windows.Forms.Button();
@@ -44,6 +45,8 @@
             this.opdaterToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.opdaterToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.logUdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Tray_icon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.button1 = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -106,21 +109,21 @@
             // åbenToolStripMenuItem
             // 
             this.åbenToolStripMenuItem.Name = "åbenToolStripMenuItem";
-            this.åbenToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.åbenToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.åbenToolStripMenuItem.Text = "Åben";
             this.åbenToolStripMenuItem.Click += new System.EventHandler(this.åbenToolStripMenuItem_Click);
             // 
             // startI1TimeToolStripMenuItem
             // 
             this.startI1TimeToolStripMenuItem.Name = "startI1TimeToolStripMenuItem";
-            this.startI1TimeToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.startI1TimeToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.startI1TimeToolStripMenuItem.Text = "Start i 1 time";
             this.startI1TimeToolStripMenuItem.Click += new System.EventHandler(this.startI1TimeToolStripMenuItem_Click);
             // 
             // startI2TimerToolStripMenuItem
             // 
             this.startI2TimerToolStripMenuItem.Name = "startI2TimerToolStripMenuItem";
-            this.startI2TimerToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.startI2TimerToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.startI2TimerToolStripMenuItem.Text = "Start i 2 timer";
             this.startI2TimerToolStripMenuItem.Click += new System.EventHandler(this.startI2TimerToolStripMenuItem_Click);
             // 
@@ -138,21 +141,21 @@
             // åbenToolStripMenuItem1
             // 
             this.åbenToolStripMenuItem1.Name = "åbenToolStripMenuItem1";
-            this.åbenToolStripMenuItem1.Size = new System.Drawing.Size(128, 22);
+            this.åbenToolStripMenuItem1.Size = new System.Drawing.Size(137, 22);
             this.åbenToolStripMenuItem1.Text = "Åben";
             this.åbenToolStripMenuItem1.Click += new System.EventHandler(this.åbenToolStripMenuItem1_Click);
             // 
             // åbenPlanToolStripMenuItem
             // 
             this.åbenPlanToolStripMenuItem.Name = "åbenPlanToolStripMenuItem";
-            this.åbenPlanToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
+            this.åbenPlanToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.åbenPlanToolStripMenuItem.Text = "Åben plan";
             this.åbenPlanToolStripMenuItem.Click += new System.EventHandler(this.åbenPlanToolStripMenuItem_Click);
             // 
             // opdaterToolStripMenuItem
             // 
             this.opdaterToolStripMenuItem.Name = "opdaterToolStripMenuItem";
-            this.opdaterToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
+            this.opdaterToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.opdaterToolStripMenuItem.Text = "Opdater";
             this.opdaterToolStripMenuItem.Click += new System.EventHandler(this.opdaterToolStripMenuItem_Click);
             // 
@@ -169,14 +172,14 @@
             // opdaterToolStripMenuItem1
             // 
             this.opdaterToolStripMenuItem1.Name = "opdaterToolStripMenuItem1";
-            this.opdaterToolStripMenuItem1.Size = new System.Drawing.Size(117, 22);
+            this.opdaterToolStripMenuItem1.Size = new System.Drawing.Size(125, 22);
             this.opdaterToolStripMenuItem1.Text = "Åben";
             this.opdaterToolStripMenuItem1.Click += new System.EventHandler(this.opdaterToolStripMenuItem1_Click);
             // 
             // opdaterToolStripMenuItem2
             // 
             this.opdaterToolStripMenuItem2.Name = "opdaterToolStripMenuItem2";
-            this.opdaterToolStripMenuItem2.Size = new System.Drawing.Size(117, 22);
+            this.opdaterToolStripMenuItem2.Size = new System.Drawing.Size(125, 22);
             this.opdaterToolStripMenuItem2.Text = "Opdater";
             this.opdaterToolStripMenuItem2.Click += new System.EventHandler(this.opdaterToolStripMenuItem2_Click);
             // 
@@ -188,11 +191,29 @@
             this.logUdToolStripMenuItem.Text = "Log ud";
             this.logUdToolStripMenuItem.Click += new System.EventHandler(this.logUdToolStripMenuItem_Click);
             // 
+            // Tray_icon
+            // 
+            this.Tray_icon.Icon = ((System.Drawing.Icon)(resources.GetObject("Tray_icon.Icon")));
+            this.Tray_icon.Text = "FocusLock";
+            this.Tray_icon.Visible = true;
+            this.Tray_icon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Tray_icon_MouseDoubleClick);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(-15, 200);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(10, 10);
+            this.button1.TabIndex = 6;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(508, 192);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.Programs_but);
             this.Controls.Add(this.Websites_but);
             this.Controls.Add(this.menuStrip1);
@@ -225,6 +246,8 @@
         private System.Windows.Forms.ToolStripMenuItem opdaterToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem opdaterToolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem logUdToolStripMenuItem;
+        private System.Windows.Forms.NotifyIcon Tray_icon;
+        private System.Windows.Forms.Button button1;
     }
 }
 

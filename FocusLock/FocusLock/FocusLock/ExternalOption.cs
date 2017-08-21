@@ -58,6 +58,7 @@ namespace FocusLock
                 timer.Start();
 
                 key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock");
+                cb.SelectedIndex = 0;
             }
             else
             {
@@ -105,7 +106,8 @@ namespace FocusLock
                 Control[] rems =
                 {
                 form.Controls["_External_Hours_lbl"],
-                form.Controls["_External_Combobox"]
+                form.Controls["_External_Combobox"],
+                form.Controls["but1"]
                 };
 
                 foreach (Control rem in rems)
@@ -153,6 +155,11 @@ namespace FocusLock
 
             if(fileFound && isRunning == false)
             {
+                FormCollection col = Application.OpenForms;
+                foreach (Form form in col)
+                {
+                    form.Activate();
+                }
                 MainForm.StartProgram(true);
 
                 if (!MainForm.KeyExists("CurrentOption"))

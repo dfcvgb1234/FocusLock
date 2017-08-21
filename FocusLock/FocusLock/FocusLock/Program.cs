@@ -28,6 +28,7 @@ namespace FocusLock
         // Paths to important files
         static string hostsPath = @"C:\Windows\System32\drivers\etc\hosts";
         static string programPath = @"C:\Windows\System32\drivers\etc\Programs.begeba";
+        static string hostPath = @"C:\Windows\System32\drivers\etc\Host.begeba";
 
         // laver en multidimmensionel array til når data hentes fra programfilen
         public static string[][] values = new string[5000][];
@@ -75,6 +76,18 @@ namespace FocusLock
             if (IsMachineUp("www.google.com"))
             {
                 DownloadProgramList();
+                if(!MainForm.KeyExists("ChangedHost"))
+                {
+                    Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("ChangedHost", "");
+                }
+                else
+                {
+                    if(Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").GetValue("ChangedHost").ToString() != "TRUE")
+                    {
+                        DownloadHostsFile();
+                    }
+                }
+
             }
             else
             {
@@ -242,12 +255,20 @@ namespace FocusLock
                 using (WebClient webClient = new WebClient())
                 {
                     webClient.Credentials = new NetworkCredential("focuslock.dk", "bagebe");
-                    webClient.DownloadFile("ftp://ftp.focuslock.dk/ftp/Programs.begeba", programPath);
+                    webClient.DownloadFile("ftp://ftp.focuslock.dk/ftp/Host.begeba", hostPath);
                 }
 
-                string fileText = File.ReadAllText(programPath);
+                string fileText = File.ReadAllText(hostPath);
+                string[] splitText = fileText.Split('\n');
 
-                Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("Programs", fileText);
+                string text = "";
+
+                foreach (string j in splitText)
+                {
+                    text += j + ";";
+                }
+
+                Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("HOST", text);
             }
             catch (Exception e)
             {

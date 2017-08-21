@@ -37,3 +37,4 @@ C:\Development\C#_development\FocusLock\FocusLock\FocusLock\obj\Debug\FocusLock.
 C:\Development\C#_development\FocusLock\FocusLock\FocusLock\obj\Debug\FocusLock.csproj.GenerateResource.Cache
 C:\Development\C#_development\FocusLock\FocusLock\FocusLock\obj\Debug\FocusLock.exe
 C:\Development\C#_development\FocusLock\FocusLock\FocusLock\obj\Debug\FocusLock.pdb
+C:\Development\C#_development\FocusLock\FocusLock\FocusLock\obj\Debug\FocusLock.LoginForm.resources

@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Websites));
             this.list = new System.Windows.Forms.ListBox();
             this.Save_but = new System.Windows.Forms.Button();
             this.Item = new System.Windows.Forms.TextBox();
@@ -35,6 +37,8 @@
             this.Delete_but = new System.Windows.Forms.Button();
             this.Searcj_lbl = new System.Windows.Forms.Label();
             this.Search_tx = new System.Windows.Forms.TextBox();
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.Reset_but = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // list
@@ -47,9 +51,9 @@
             // 
             // Save_but
             // 
-            this.Save_but.Location = new System.Drawing.Point(13, 377);
+            this.Save_but.Location = new System.Drawing.Point(145, 377);
             this.Save_but.Name = "Save_but";
-            this.Save_but.Size = new System.Drawing.Size(261, 24);
+            this.Save_but.Size = new System.Drawing.Size(129, 24);
             this.Save_but.TabIndex = 1;
             this.Save_but.Text = "Gem ændringer";
             this.Save_but.UseVisualStyleBackColor = true;
@@ -100,11 +104,27 @@
             this.Search_tx.TabIndex = 5;
             this.Search_tx.TextChanged += new System.EventHandler(this.Search_tx_TextChanged);
             // 
+            // notifyIcon1
+            // 
+            this.notifyIcon1.Text = "notifyIcon1";
+            this.notifyIcon1.Visible = true;
+            // 
+            // Reset_but
+            // 
+            this.Reset_but.Location = new System.Drawing.Point(13, 378);
+            this.Reset_but.Name = "Reset_but";
+            this.Reset_but.Size = new System.Drawing.Size(126, 23);
+            this.Reset_but.TabIndex = 7;
+            this.Reset_but.Text = "Gendan standard";
+            this.Reset_but.UseVisualStyleBackColor = true;
+            this.Reset_but.Click += new System.EventHandler(this.Reset_but_Click);
+            // 
             // Websites
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(289, 410);
+            this.Controls.Add(this.Reset_but);
             this.Controls.Add(this.Searcj_lbl);
             this.Controls.Add(this.Search_tx);
             this.Controls.Add(this.Delete_but);
@@ -112,6 +132,8 @@
             this.Controls.Add(this.Item);
             this.Controls.Add(this.Save_but);
             this.Controls.Add(this.list);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Websites";
             this.Text = "Websites";
             this.Load += new System.EventHandler(this.Websites_Load);
@@ -129,5 +151,7 @@
         private System.Windows.Forms.Button Delete_but;
         private System.Windows.Forms.Label Searcj_lbl;
         private System.Windows.Forms.TextBox Search_tx;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.Button Reset_but;
     }
 }
