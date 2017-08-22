@@ -76,6 +76,10 @@ namespace FocusLock
                 {
                     Environment.Exit(1);
                 }
+                else if (!butPressed && logout)
+                {
+
+                }
                 else
                 {
                     e.Cancel = true;

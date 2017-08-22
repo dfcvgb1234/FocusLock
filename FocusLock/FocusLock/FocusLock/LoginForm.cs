@@ -86,7 +86,7 @@ namespace FocusLock
 
                         if (Save_cred.Checked)
                         {
-                            Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("Creds", name + ";" + pass);
+                            Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("Creds", name + ";" + Pass_txt.Text);
                             Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("SaveCreds", "TRUE");
                         }
                         else
