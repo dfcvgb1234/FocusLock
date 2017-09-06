@@ -28,6 +28,8 @@ namespace FocusLock
 
         NotifyIcon ni;
 
+        static MenuStrip menu;
+
         public static ComboBox cb = new ComboBox();
 
         static Button focusBut;
@@ -51,7 +53,7 @@ namespace FocusLock
         public bool isElevated;
 
         // laver en object array til vores checkedPrograms
-        static object[] checkedPrograms = new object[Program.processList.Length];
+        static List<object> checkedPrograms = new List<object>();
 
         // en array som indeholder de websites der bliver blokeret
         public static string[] websites;
@@ -94,8 +96,9 @@ namespace FocusLock
         }
 
         // genererer vores fulde liste af de programmer der skal lukkes
-        void CreateProgramArray(object[] checkedArray, object[] programArray)
+        public static void CreateProgramArray(object[] checkedArray, object[] programArray)
         {
+            checkedPrograms.Clear();
             // omdanner arrayen til en string array
             string[] check = checkedArray.Where(x => x != null)
            .Select(x => x.ToString())
@@ -106,19 +109,19 @@ namespace FocusLock
             {
                 if (check[i] == "TRUE")
                 {
-                    checkedPrograms[i] = programArray[i];
+                    checkedPrograms.Add(programArray[i]);
                 }
             }
         }
         // metode slut
 
         // metoden der sørger for at processerne bliver checket og lukket hvis de skal lukkes
-        public static void StopProcesses(object[] Processes)
+        public static void StopProcesses(List<object> Processes)
         {
             RegistryKey task;
 
             //cmd = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\cmd.exe");
-            task = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\taskmgr.exe");
+            task = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\taskmgr.exe");
 
             //cmd.SetValue("Debugger", "cmd.exe /k " + Environment.CurrentDirectory + "\\\"Acess Denied\"\\\"Acess Denied.html\"" + "& exit");
             task.SetValue("Debugger", "cmd.exe /k " + Environment.CurrentDirectory + "\\\"Acess Denied\"\\\"Acess Denied.html\"" + "& exit");
@@ -137,9 +140,15 @@ namespace FocusLock
                 key.SetValue("Debugger", "cmd.exe /k " + Environment.CurrentDirectory + "\\\"Acess Denied\"\\\"Acess Denied.html\"" + "& exit");
                 key.Close();
                 // finder processen og dræber den
+                Console.WriteLine("Kill: " + n);
+                if (n == "spotify")
+                {
+                    Console.WriteLine("SPOTIFY FOUND");
+                }
                 Process[] running = Process.GetProcessesByName(n.ToLower());
                 foreach (Process j in running)
                 {
+                    Console.WriteLine("Kill: " + j);
                     try
                     {
                         j.Kill();
@@ -156,6 +165,8 @@ namespace FocusLock
         // Hvad der skal ske når programmet åbnes
         private void Main_Load(object sender, EventArgs e)
         {
+            menu = menuStrip1;
+
             focusBut = Programs_but;
 
             ni = Tray_icon;
@@ -388,6 +399,8 @@ namespace FocusLock
                         onceBut = true;
                     StopProcesses(checkedPrograms);
 
+                    GetCurrentForm().MainMenuStrip.Visible = false;
+
                     butPressed = true;
                     CreateShortcut("FocusLock", Environment.GetFolderPath(Environment.SpecialFolder.Startup), AppDomain.CurrentDomain.BaseDirectory + "FocusLock.exe");
 
@@ -403,6 +416,10 @@ namespace FocusLock
                             UpdateHostFile(j);
                         }
                     }
+
+                    GetCurrentForm().Controls["Programs_but"].Visible = false;
+                    GetCurrentForm().Controls["Websites_but"].Visible = false;
+
                     Console.WriteLine("Program has been run");
                 }
                 //MessageBox.Show("Programmet kører nu", "running");
@@ -415,6 +432,11 @@ namespace FocusLock
 
                     but.Image = Image.FromFile(Environment.CurrentDirectory + @"\Rescources\Lock_open.png");
                 }
+
+                GetCurrentForm().Controls["Programs_but"].Visible = true;
+                GetCurrentForm().Controls["Websites_but"].Visible = true;
+
+                GetCurrentForm().MainMenuStrip.Visible = true;
 
                 butPressed = false;
                 System.IO.File.Delete(@"C:\Windows\System32\drivers\etc\hosts");
@@ -439,7 +461,7 @@ namespace FocusLock
         }
 
         // metode der sletter det data som er blevet lagt ind i registry
-        public static void DeleteRegistryData(object[] Processes)
+        public static void DeleteRegistryData(List<object> Processes)
         {
             //Microsoft.Win32.Registry.LocalMachine.DeleteSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\cmd.exe");
             Microsoft.Win32.Registry.LocalMachine.DeleteSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\taskmgr.exe");
@@ -448,12 +470,12 @@ namespace FocusLock
                        .Select(x => x.ToString())
                        .ToArray();
             Console.WriteLine(proc.Length);
-            Console.WriteLine(checkedPrograms.Length);
+            Console.WriteLine(checkedPrograms.Count);
             try
             {
                 foreach (string n in proc)
                 {
-                    Console.WriteLine(n);
+                    Console.WriteLine(n=="spotify");
                     if (Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\" + n + ".exe") != null)
                     {
                         Microsoft.Win32.Registry.LocalMachine.DeleteSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\" + n + ".exe");
@@ -634,6 +656,7 @@ namespace FocusLock
         {
             if (!onceBut)
             {
+                key.SetValue("LoginOffline", "FALSE");
                 key.SetValue("Creds", "");
                 logout = true;
                 var login = new LoginForm();

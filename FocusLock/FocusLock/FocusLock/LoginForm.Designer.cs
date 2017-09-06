@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginForm));
             this.Save_cred = new System.Windows.Forms.CheckBox();
             this.User_txt = new System.Windows.Forms.TextBox();
             this.Pass_txt = new System.Windows.Forms.TextBox();
@@ -100,8 +101,10 @@
             this.Controls.Add(this.Pass_txt);
             this.Controls.Add(this.User_txt);
             this.Controls.Add(this.Save_cred);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "LoginForm";
-            this.Text = "LoginForm";
+            this.Text = "Login";
             this.Load += new System.EventHandler(this.LoginForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

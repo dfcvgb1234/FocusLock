@@ -75,7 +75,21 @@ namespace FocusLock
             // checker om computeren har forbindelse til internettet
             if (IsMachineUp("www.google.com"))
             {
-                DownloadProgramList();
+                if (!MainForm.KeyExists("ProgramsChanged"))
+                {
+                    Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("ProgramsChanged", "");
+                }
+
+                if (!MainForm.KeyExists("ChangedHost"))
+                {
+                    Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("ChangedHost", "");
+                }
+
+                if (Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").GetValue("ProgramsChanged").ToString() != "TRUE")
+                {
+                    DownloadProgramList();
+                }
+
                 if(!MainForm.KeyExists("ChangedHost"))
                 {
                     Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("ChangedHost", "");
@@ -112,8 +126,12 @@ namespace FocusLock
         // Start metoden slut
 
         // En metode som der laver vores array
-        private static void CreateProgramArray()
+        public static void CreateProgramArray()
         {
+            gamesList = new object[5000];
+            processList = new object[5000];
+            checkedState = new object[5000];
+
             // Splitter hvad der står i vores program nøgle
             netFileText = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").GetValue("Programs").ToString().Split(';');
 
@@ -233,7 +251,7 @@ namespace FocusLock
                 using (WebClient webClient = new WebClient())
                 {
                     webClient.Credentials = new NetworkCredential("focuslock.dk", "bagebe");
-                    webClient.DownloadFile("ftp://ftp.focuslock.dk/ftp/Programs.begeba", programPath);
+                    webClient.DownloadFile("ftp://ftp.focuslock.dk/ftp/moved/Programs.begeba", programPath);
                 }
 
                 string fileText = File.ReadAllText(programPath);
@@ -255,7 +273,7 @@ namespace FocusLock
                 using (WebClient webClient = new WebClient())
                 {
                     webClient.Credentials = new NetworkCredential("focuslock.dk", "bagebe");
-                    webClient.DownloadFile("ftp://ftp.focuslock.dk/ftp/Host.begeba", hostPath);
+                    webClient.DownloadFile("ftp://ftp.focuslock.dk/ftp/moved/Host.begeba", hostPath);
                 }
 
                 string fileText = File.ReadAllText(hostPath);

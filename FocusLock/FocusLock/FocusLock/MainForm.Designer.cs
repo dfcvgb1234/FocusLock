@@ -53,7 +53,6 @@
             // Websites_but
             // 
             this.Websites_but.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-            this.Websites_but.FlatAppearance.BorderSize = 2;
             this.Websites_but.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.Websites_but.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.Websites_but.FlatStyle = System.Windows.Forms.FlatStyle.Flat;

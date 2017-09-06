@@ -96,8 +96,9 @@ namespace FocusLock
                 
                 //File.AppendAllText(@"C:\Windows\System32\drivers\etc\Programs.begeba", ItemBox.Items[i] + "," + tmpprocesslist[i] + "," + check + ";");
             }
-            File.AppendAllText(@"C:\Windows\System32\drivers\etc\Changed.begeba", "true");
-            MessageBox.Show("Genstart programmet for at ændringerne træder i kraft", "HUSK!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Program.CreateProgramArray();
+            MainForm.CreateProgramArray(Program.checkedState, Program.processList);
+            key.SetValue("ProgramsChanged", "TRUE");
         }
 
         private void Search_tx_TextChanged(object sender, EventArgs e)
@@ -114,6 +115,12 @@ namespace FocusLock
         private void Searcj_lbl_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void Reset_Click(object sender, EventArgs e)
+        {
+            key.SetValue("ProgramsChanged", "FALSE");
+            MessageBox.Show("Genstart programmet for at ændringerne træder i kraft", "HUSK!", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
