@@ -172,6 +172,11 @@ namespace FocusLock
 
             if(!fileFound && isRunning == true)
             {
+                FormCollection col = Application.OpenForms;
+                foreach (Form form in col)
+                {
+                    form.Activate();
+                }
                 MainForm.StartProgram(false);
                 isRunning = false;
             }

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginForm));
             this.Save_cred = new System.Windows.Forms.CheckBox();
             this.User_txt = new System.Windows.Forms.TextBox();
             this.Pass_txt = new System.Windows.Forms.TextBox();
@@ -52,14 +53,17 @@
             this.User_txt.Name = "User_txt";
             this.User_txt.Size = new System.Drawing.Size(134, 20);
             this.User_txt.TabIndex = 1;
+            this.User_txt.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.User_txt_KeyPress);
             // 
             // Pass_txt
             // 
             this.Pass_txt.Location = new System.Drawing.Point(10, 65);
             this.Pass_txt.Name = "Pass_txt";
-            this.Pass_txt.PasswordChar = '=';
+            this.Pass_txt.PasswordChar = '*';
             this.Pass_txt.Size = new System.Drawing.Size(134, 20);
             this.Pass_txt.TabIndex = 2;
+            this.Pass_txt.UseSystemPasswordChar = true;
+            this.Pass_txt.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Pass_txt_KeyPress);
             // 
             // Login_but
             // 
@@ -74,11 +78,12 @@
             // User_lbl
             // 
             this.User_lbl.AutoSize = true;
-            this.User_lbl.Location = new System.Drawing.Point(44, 6);
+            this.User_lbl.Location = new System.Drawing.Point(59, 5);
             this.User_lbl.Name = "User_lbl";
-            this.User_lbl.Size = new System.Drawing.Size(62, 13);
+            this.User_lbl.Size = new System.Drawing.Size(35, 13);
             this.User_lbl.TabIndex = 4;
-            this.User_lbl.Text = "Brugernavn";
+            this.User_lbl.Text = "E-mail";
+            this.User_lbl.Click += new System.EventHandler(this.User_lbl_Click);
             // 
             // Pass_lbl
             // 
@@ -100,8 +105,10 @@
             this.Controls.Add(this.Pass_txt);
             this.Controls.Add(this.User_txt);
             this.Controls.Add(this.Save_cred);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "LoginForm";
-            this.Text = "LoginForm";
+            this.Text = "Login";
             this.Load += new System.EventHandler(this.LoginForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

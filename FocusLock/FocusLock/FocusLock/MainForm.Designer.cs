@@ -53,7 +53,6 @@
             // Websites_but
             // 
             this.Websites_but.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-            this.Websites_but.FlatAppearance.BorderSize = 2;
             this.Websites_but.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.Websites_but.FlatAppearance.MouseOverBackColor = System.Drawing.Color.WhiteSmoke;
             this.Websites_but.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -204,7 +203,6 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(10, 10);
             this.button1.TabIndex = 6;
-            this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
             // 
             // MainForm
@@ -217,9 +215,10 @@
             this.Controls.Add(this.Programs_but);
             this.Controls.Add(this.Websites_but);
             this.Controls.Add(this.menuStrip1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
+            this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "FocusLock";
             this.Load += new System.EventHandler(this.Main_Load);

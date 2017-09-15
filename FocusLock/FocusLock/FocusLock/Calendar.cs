@@ -21,6 +21,12 @@ namespace FocusLock
 
         RegistryKey key;
 
+        public string[][] labels;
+
+        public List<string> whole = new List<string>();
+        public List<string> half1 = new List<string>();
+        public List<string> half2 = new List<string>();
+
         // definere hvor mange rows og columns der skal være
         const int RowCount = 24;
         const int ColumnCount = 7;
@@ -63,53 +69,50 @@ namespace FocusLock
                     GridContainer.Controls.Add(lbl);
                 }
             }
-            if (key.GetValue("DateInfo") != null)
+
+            if (MainForm.KeyExists("WHOLE"))
             {
-                string fileText = key.GetValue("DateInfo").ToString();
-                string[] cube = fileText.Split(';');
-                string[] splitIndex;
-                Size size = new Size(12, 20);
-                Size realSize = new Size(20, 20);
+                string[] filetext = key.GetValue("WHOLE").ToString().Split(';');
 
-                foreach (string h in cube)
+                foreach (string j in filetext)
                 {
-                    splitIndex = h.Split(',');
-                    try
+                    if (!String.IsNullOrWhiteSpace(j))
                     {
-
-                        Label lbl = this.Controls.Find(splitIndex[0], true).FirstOrDefault() as Label;
-                        if (splitIndex[1] == "1")
-                        {
-                            Console.WriteLine("1");
-                            lbl.BackColor = Color.CadetBlue;
-                            lbl.Size = realSize;
-                        }
-                        else if (splitIndex[1] == "2")
-                        {
-                            Console.WriteLine("2");
-                            lbl.BackColor = Color.CadetBlue;
-                            lbl.Size = size;
-                        }
+                        Label lbl = this.Controls.Find(j,true).FirstOrDefault() as Label;
+                        lbl.BackColor = Color.Orange;
+                        whole.Add(lbl.Name);
                     }
-                    catch { }
                 }
             }
-
-            else
+            if (MainForm.KeyExists("HALF1"))
             {
-                key.SetValue("DateInfo", " ");
-                string fileText = key.GetValue("DateInfo").ToString();
-                string[] cube = fileText.Split(';');
+                string[] filetext = key.GetValue("HALF1").ToString().Split(';');
 
-
-                foreach (string h in cube)
+                foreach (string j in filetext)
                 {
-                    try
+                    if (!String.IsNullOrWhiteSpace(j))
                     {
-                        Label lbl = this.Controls.Find(h, true).FirstOrDefault() as Label;
-                        lbl.BackColor = Color.CadetBlue;
+                        Label lbl = this.Controls.Find(j, true).FirstOrDefault() as Label;
+                        lbl.BackColor = Color.Orange;
+                        lbl.Size = new Size(12, 20);
+                        half1.Add(lbl.Name);
                     }
-                    catch { }
+                }
+            }
+            if (MainForm.KeyExists("HALF2"))
+            {
+                string[] filetext = key.GetValue("HALF2").ToString().Split(';');
+
+                foreach (string j in filetext)
+                {
+                    if (!String.IsNullOrWhiteSpace(j))
+                    {
+                        Label lbl = this.Controls.Find(j, true).FirstOrDefault() as Label;
+                        lbl.BackColor = Color.Orange;
+                        lbl.Size = new Size(12, 20);
+                        lbl.Location = new Point(lbl.Location.X + 9, lbl.Location.Y);
+                        half2.Add(lbl.Name);
+                    }
                 }
             }
         }
@@ -122,59 +125,144 @@ namespace FocusLock
             Color color = lbl.BackColor;
             Size size = new Size(12, 20);
             Size realSize = new Size(20, 20);
-            Point originalPos = new Point(lbl.Location.X-2,lbl.Location.Y-2);
-            Point newPos = new Point(lbl.Location.X + 2, lbl.Location.Y + 2);
+            Point originalPos = new Point(lbl.Location.X-9,lbl.Location.Y);
+            Point newPos = new Point(lbl.Location.X + 9, lbl.Location.Y );
 
-            if (color == System.Drawing.Color.CadetBlue && e.Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left)
             {
-                color = System.Drawing.Color.LightGray;
-                lbl.Size = new Size(20, 20);
-            }
-            else if (color == Color.LightGray && e.Button == MouseButtons.Left)
-            {
-                color = Color.CadetBlue;
-                lbl.Size = realSize;
+                if (color == Color.Orange && lbl.Size == realSize)
+                {
+                    whole.Remove(lbl.Name);
+                    lbl.BackColor = Color.LightGray;
+                }
+                else if (color == Color.LightGray && lbl.Size == realSize)
+                {
+                    whole.Add(lbl.Name);
+                    lbl.BackColor = Color.Orange;
+                }
+                else if (color == Color.Orange && lbl.Size == size)
+                {
+                    bool found = false;
+                    foreach (string j in half1)
+                    {
+                        if(j == lbl.Name)
+                        {
+                            found = true;
+                        }
+                    }
+                    if(found)
+                    {
+                        half1.Remove(lbl.Name);
+                        lbl.Size = realSize;
+                        whole.Add(lbl.Name);
+                    }
+                    else
+                    {
+                        bool find = false;
+                        foreach (string j in half2)
+                        {
+                            if (j == lbl.Name)
+                            {
+                                find = true;
+                            }
+                        }
+                        if(find)
+                        {
+                            lbl.Location = originalPos;
+                            lbl.Size = realSize;
+                            whole.Add(lbl.Name);
+                            half2.Remove(lbl.Name);
+                        }
+                    }
+                }
             }
 
-            if(color == Color.CadetBlue && e.Button == MouseButtons.Right)
+            if(e.Button == MouseButtons.Right)
             {
-                color = Color.LightGray;
-                lbl.Size = realSize;
+                if (color == Color.Orange && lbl.Size == realSize)
+                {
+                    lbl.Size = size;
+                    half1.Add(lbl.Name);
+                    whole.Remove(lbl.Name);
+                }
+                else if (color == Color.LightGray && lbl.Size == realSize)
+                {
+                    lbl.Size = size;
+                    lbl.BackColor = Color.Orange;
+                    half1.Add(lbl.Name);
+                }
+                else if (color == Color.Orange && lbl.Size == size)
+                {
+                    bool found = false;
+                    foreach (string j in half1)
+                    {
+                        if(j == lbl.Name)
+                        {
+                            lbl.Location = newPos;
+                            found = true;
+                        }
+                    }
+                    if(found)
+                    {
+                        half1.Remove(lbl.Name);
+                        half2.Add(lbl.Name);
+                    }
+                    else
+                    {
+                        bool find = false;
+                        foreach (string i in half2)
+                        {
+                            if (i == lbl.Name)
+                            {
+                                lbl.Location = originalPos;
+                                find = true;
+                            }
+                        }
+                        if(find)
+                        {
+                            half1.Add(lbl.Name);
+                            half2.Remove(lbl.Name);
+                        }
+                    }
+                }
             }
-            else if(color == Color.LightGray && e.Button == MouseButtons.Right)
-            {
-                color = Color.CadetBlue;
-                lbl.Size = size;
-            }
-
-            lbl.BackColor = color;
-            Console.WriteLine(GridContainer.Controls.OfType<Label>().Count());
 
             RenameGrid(lbl);
 
-            if (key.GetValue("DateInfo") != null)
+            if (key.GetValue("WHOLE") == null)
             {
-                key.SetValue("DateInfo", "");
+                key.SetValue("WHOLE", "");
+            }
+            if (key.GetValue("HALF1") == null)
+            {
+                key.SetValue("HALF1", "");
+            }
+            if (key.GetValue("HALF2") == null)
+            {
+                key.SetValue("HALF2", "");
             }
 
-            // gemmer det i en fil
-            foreach (Label labl in GridContainer.Controls.OfType<Label>())
+            key.SetValue("WHOLE", "");
+            key.SetValue("HALF1", "");
+            key.SetValue("HALF2", "");
+
+            Console.WriteLine("WHOLE");
+            foreach (string i in whole)
             {
-                if (labl.BackColor == Color.CadetBlue && labl.Size == realSize)
-                {
-                    key.SetValue("DateInfo", key.GetValue("DateInfo").ToString() + labl.Name + ",1" + ";");
-                    //File.AppendAllText(@"C:\Windows\System32\drivers\etc\DateInfo.begeba", labl.Name + ",1" + ";");
-                }
-                if (labl.BackColor == Color.CadetBlue && labl.Size == size)
-                {
-                    key.SetValue("DateInfo", key.GetValue("DateInfo").ToString() + labl.Name + ",2" + ";");
-                    //File.AppendAllText(@"C:\Windows\System32\drivers\etc\DateInfo.begeba", labl.Name + ",2" + ";");
-                }
-                else if (labl.BackColor != Color.CadetBlue && key.GetValue("DateInfo") == null)
-                {
-                    key.SetValue("DateInfo", "");
-                    //File.Create(@"C:\Windows\System32\drivers\etc\DateInfo.begeba").Close();
-                }
+                Console.WriteLine(i);
+                key.SetValue("WHOLE", key.GetValue("WHOLE").ToString() + i + ";");
+            }
+            Console.WriteLine("HALF1");
+            foreach (string i in half1)
+            {
+                Console.WriteLine(i);
+                key.SetValue("HALF1", key.GetValue("HALF1").ToString() + i + ";");
+            }
+            Console.WriteLine("HALF2");
+            foreach (string i in half2)
+            {
+                Console.WriteLine(i);
+                key.SetValue("HALF2", key.GetValue("HALF2").ToString() + i + ";");
             }
         }
         // metode slut

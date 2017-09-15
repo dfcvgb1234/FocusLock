@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Calendar));
             this.GridContainer = new System.Windows.Forms.Panel();
             this.Mandag = new System.Windows.Forms.Label();
             this.Tirsdag = new System.Windows.Forms.Label();
@@ -386,8 +387,10 @@
             this.Controls.Add(this.Tirsdag);
             this.Controls.Add(this.Mandag);
             this.Controls.Add(this.GridContainer);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Calendar";
-            this.Text = "Calendar";
+            this.Text = "Tidsplan";
             this.Load += new System.EventHandler(this.Calendar_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

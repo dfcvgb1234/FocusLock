@@ -17,6 +17,8 @@ namespace FocusLock
 
         public bool updating = false;
 
+        Button but;
+
         // laver en ny timer
         Timer timer = new Timer();
 
@@ -62,6 +64,7 @@ namespace FocusLock
                 form.Controls.Add(lbl1);
                 form.Controls.Add(but1);
                 textbox = tx1;
+                but = but1;
 
                 if (key.GetValue("DateInfo") == null)
                 {
@@ -198,89 +201,217 @@ namespace FocusLock
 
         // checker om det er tid til at starte programmet
         public void RunCalendarCheck()
-        { 
+        {
 
-            string day = "";
-            string[] fileText = new string[key.GetValue("DateInfo").ToString().Split(';').Length];
-            fileText = key.GetValue("DateInfo").ToString().Split(';');
-            Console.WriteLine(DateTime.Now.Hour);
-            foreach (string j in fileText)
+            if(!MainForm.KeyExists("WHOLE"))
             {
+                key.SetValue("WHOLE", "");
+            }
+            if (!MainForm.KeyExists("HALF1"))
+            {
+                key.SetValue("HALF1", "");
+            }
+            if (!MainForm.KeyExists("HALF2"))
+            {
+                key.SetValue("HALF2", "");
+            }
+
+            int day = 0;
+            DateTime time = Program.GetNistTime();
+            string[] whole = key.GetValue("WHOLE").ToString().Split(';');
+            string[] half1 = key.GetValue("HALF1").ToString().Split(';');
+            string[] half2 = key.GetValue("HALF2").ToString().Split(';');
+
+            switch (time.DayOfWeek)
+            {
+                case DayOfWeek.Monday:
+                    day = 0;
+                    break;
+
+                case DayOfWeek.Tuesday:
+                    day = 1;
+                    break;
+
+                case DayOfWeek.Wednesday:
+                    day = 2;
+                    break;
+
+                case DayOfWeek.Thursday:
+                    day = 3;
+                    break;
+
+                case DayOfWeek.Friday:
+                    day = 4;
+                    break;
+
+                case DayOfWeek.Saturday:
+                    day = 5;
+                    break;
+
+                case DayOfWeek.Sunday:
+                    day = 6;
+                    break;
+            }
+
+            foreach (string j in whole)
+            {
+                bool failure = true;
                 if (!String.IsNullOrWhiteSpace(j))
                 {
-                    string[] tmp = j.Split(':');
-                    string[] daytmp = tmp[1].Split(',');
-
-                    // navngir varibalen "day" så den får den rigtige information
-                    switch (daytmp[0])
+                    string[] split = j.Split(':');
+                    if (day == int.Parse(split[1]))
                     {
-                        case "0":
-                            day = "Monday";
-                            break;
-
-                        case "1":
-                            day = "Tuesday";
-                            break;
-
-                        case "2":
-                            day = "Wedensday";
-                            break;
-
-                        case "3":
-                            day = "Thursday";
-                            break;
-
-                        case "4":
-                            day = "Friday";
-                            break;
-
-                        case "5":
-                            day = "Saturday";
-                            break;
-
-                        case "6":
-                            day = "Sunday";
-                            break;
-                    }
-                    int clock = Int32.Parse(tmp[0]);
-                    Console.WriteLine("{0}:{1}", clock, day);
-
-                    // checker om det er tid
-                    if (daytmp[1] == "1")
-                    {
-                        if (DateTime.Now.Hour == clock && DateTime.Now.DayOfWeek.ToString().ToLower() == day.ToLower())
+                        if (int.Parse(split[0]) == time.Hour)
                         {
-                            // starter programmet hvis det er
-                            MainForm.StartProgram(true);
-                            if (!MainForm.KeyExists("CurrentOption"))
+                            if (isRunning == false)
                             {
-                                key.SetValue("CurrentOption", "");
+                                FormCollection col = Application.OpenForms;
+                                foreach (Form form in col)
+                                {
+                                    form.Activate();
+                                }
+                                but.Visible = false;
+                                MainForm.StartProgram(true);
+                                isRunning = true;
+                                failure = false;
                             }
-                            key.SetValue("CurrentOption", "CALENDAR");
-                            isRunning = true;
                             break;
                         }
-                        else if (isRunning == true)
+                        else
                         {
-                            // stopper programmet hvis ikke
-                            MainForm.StartProgram(false);
-                            isRunning = false;
+                            failure = true;
                         }
                     }
-                    if(daytmp[1] == "2")
+                    else
                     {
-                        if (DateTime.Now.Hour == clock && DateTime.Now.DayOfWeek.ToString().ToLower() == day.ToLower() && DateTime.Now.Minute >= 30)
+                        failure = true;
+                    }
+
+                    if (failure)
+                    {
+                        if (isRunning == true)
                         {
-                            // starter programmet hvis det er
-                            MainForm.StartProgram(true);
-                            isRunning = true;
-                            break;
-                        }
-                        else if (isRunning == true)
-                        {
-                            // stopper programmet hvis ikke
+                            FormCollection col = Application.OpenForms;
+                            foreach (Form form in col)
+                            {
+                                form.Activate();
+                            }
+                            but.Visible = true;
                             MainForm.StartProgram(false);
-                            isRunning = false;
+                        }
+                    }
+                }
+            }
+
+            foreach (string j in half1)
+            {
+                bool faliure = true;
+                if (!String.IsNullOrWhiteSpace(j))
+                {
+                    string[] split = j.Split(':');
+                    if (day == int.Parse(split[1]))
+                    {
+                        if (int.Parse(split[0]) == time.Hour)
+                        {
+                            if (time.Minute < 30)
+                            {
+                                if (isRunning == false)
+                                {
+                                    FormCollection col = Application.OpenForms;
+                                    foreach (Form form in col)
+                                    {
+                                        form.Activate();
+                                    }
+                                    but.Visible = false;
+                                    MainForm.StartProgram(true);
+                                    isRunning = true;
+                                    faliure = false;
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                faliure = true;
+                            }
+                        }
+                        else
+                        {
+                            faliure = true;
+                        }
+                    }
+                    else
+                    {
+                        faliure = true;
+                    }
+                    
+                    if(faliure)
+                    {
+                        if (isRunning == true)
+                        {
+                            FormCollection col = Application.OpenForms;
+                            foreach (Form form in col)
+                            {
+                                form.Activate();
+                            }
+                            but.Visible = true;
+                            MainForm.StartProgram(false);
+                        }
+                    }
+                }
+            }
+
+            foreach (string j in half2)
+            {
+                bool faliure = true;
+                if (!String.IsNullOrWhiteSpace(j))
+                {
+                    string[] split = j.Split(':');
+                    if (day == int.Parse(split[1]))
+                    {
+                        if (int.Parse(split[0]) == time.Hour)
+                        {
+                            if (time.Minute > 30)
+                            {
+                                if (isRunning == false)
+                                {
+                                    FormCollection col = Application.OpenForms;
+                                    foreach (Form form in col)
+                                    {
+                                        form.Activate();
+                                    }
+                                    but.Visible = false;
+                                    MainForm.StartProgram(true);
+                                    isRunning = true;
+                                    faliure = false;
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                faliure = true;
+                            }
+                        }
+                        else
+                        {
+                            faliure = true;
+                        }
+                    }
+                    else
+                    {
+                        faliure = true;
+                    }
+
+                    if (faliure)
+                    {
+                        if (isRunning == true)
+                        {
+                            FormCollection col = Application.OpenForms;
+                            foreach (Form form in col)
+                            {
+                                form.Activate();
+                            }
+                            but.Visible = true;
+                            MainForm.StartProgram(false);
                         }
                     }
                 }

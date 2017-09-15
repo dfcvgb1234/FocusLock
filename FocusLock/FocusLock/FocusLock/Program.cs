@@ -57,6 +57,8 @@ namespace FocusLock
                 ForceAdmin();
             }
 
+            CheckForUpdates();
+
             // Sørger for at hosts filen den er der
             if (!File.Exists(hostsPath))
             {
@@ -75,7 +77,21 @@ namespace FocusLock
             // checker om computeren har forbindelse til internettet
             if (IsMachineUp("www.google.com"))
             {
-                DownloadProgramList();
+                if (!MainForm.KeyExists("ProgramsChanged"))
+                {
+                    Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("ProgramsChanged", "");
+                }
+
+                if (!MainForm.KeyExists("ChangedHost"))
+                {
+                    Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("ChangedHost", "");
+                }
+
+                if (Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").GetValue("ProgramsChanged").ToString() != "TRUE")
+                {
+                    DownloadProgramList();
+                }
+
                 if(!MainForm.KeyExists("ChangedHost"))
                 {
                     Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("ChangedHost", "");
@@ -112,8 +128,12 @@ namespace FocusLock
         // Start metoden slut
 
         // En metode som der laver vores array
-        private static void CreateProgramArray()
+        public static void CreateProgramArray()
         {
+            gamesList = new object[5000];
+            processList = new object[5000];
+            checkedState = new object[5000];
+
             // Splitter hvad der står i vores program nøgle
             netFileText = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").GetValue("Programs").ToString().Split(';');
 
@@ -159,6 +179,31 @@ namespace FocusLock
             }
         }
         // CreateProgramArray metode slut
+
+        private static void CheckForUpdates()
+        {
+            var version = FileVersionInfo.GetVersionInfo(Environment.CurrentDirectory + @"\" + "FocusLock.exe");
+            Console.WriteLine(version.FileVersion);
+            again:
+            try
+            {
+                using (WebClient client = new WebClient())
+                {
+                    client.Credentials = new NetworkCredential("focuslock.dk", "bagebe");
+                    client.DownloadFile("ftp://ftp.focuslock.dk/FocusLock_updates/CurrentVersion.txt", Environment.CurrentDirectory + @"\CurrentVersion.txt");
+                }
+            }
+            catch { goto again; }
+            string onlineversion = File.ReadAllText(Environment.CurrentDirectory + @"\CurrentVersion.txt");
+            Console.WriteLine(onlineversion);
+
+            if(version.FileVersion != onlineversion)
+            {
+                Console.WriteLine(Environment.CurrentDirectory + @"\FocusLock_updater.exe");
+                Process.Start(Environment.CurrentDirectory + @"\FocusLock_updater.exe",onlineversion);
+                Environment.Exit(1);
+            }
+        }
 
         // Checker om der  er en program fil, hvis der ikke er noget net
         private static void CheckProgramList()
@@ -233,7 +278,7 @@ namespace FocusLock
                 using (WebClient webClient = new WebClient())
                 {
                     webClient.Credentials = new NetworkCredential("focuslock.dk", "bagebe");
-                    webClient.DownloadFile("ftp://ftp.focuslock.dk/ftp/Programs.begeba", programPath);
+                    webClient.DownloadFile("ftp://ftp.focuslock.dk/ftp/moved/Programs.begeba", programPath);
                 }
 
                 string fileText = File.ReadAllText(programPath);
@@ -255,7 +300,7 @@ namespace FocusLock
                 using (WebClient webClient = new WebClient())
                 {
                     webClient.Credentials = new NetworkCredential("focuslock.dk", "bagebe");
-                    webClient.DownloadFile("ftp://ftp.focuslock.dk/ftp/Host.begeba", hostPath);
+                    webClient.DownloadFile("ftp://ftp.focuslock.dk/ftp/moved/Host.begeba", hostPath);
                 }
 
                 string fileText = File.ReadAllText(hostPath);
