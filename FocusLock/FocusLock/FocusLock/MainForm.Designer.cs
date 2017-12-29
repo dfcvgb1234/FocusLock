@@ -46,8 +46,9 @@
             this.opdaterToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.logUdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Tray_icon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.button1 = new System.Windows.Forms.Button();
+            this.ServiceEventManager = new System.Diagnostics.EventLog();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ServiceEventManager)).BeginInit();
             this.SuspendLayout();
             // 
             // Websites_but
@@ -197,13 +198,9 @@
             this.Tray_icon.Visible = true;
             this.Tray_icon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Tray_icon_MouseDoubleClick);
             // 
-            // button1
+            // ServiceEventManager
             // 
-            this.button1.Location = new System.Drawing.Point(-15, 200);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(10, 10);
-            this.button1.TabIndex = 6;
-            this.button1.UseVisualStyleBackColor = true;
+            this.ServiceEventManager.SynchronizingObject = this;
             // 
             // MainForm
             // 
@@ -211,7 +208,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(508, 192);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.Programs_but);
             this.Controls.Add(this.Websites_but);
             this.Controls.Add(this.menuStrip1);
@@ -224,6 +220,7 @@
             this.Load += new System.EventHandler(this.Main_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ServiceEventManager)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -246,7 +243,7 @@
         private System.Windows.Forms.ToolStripMenuItem opdaterToolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem logUdToolStripMenuItem;
         private System.Windows.Forms.NotifyIcon Tray_icon;
-        private System.Windows.Forms.Button button1;
+        private System.Diagnostics.EventLog ServiceEventManager;
     }
 }
 

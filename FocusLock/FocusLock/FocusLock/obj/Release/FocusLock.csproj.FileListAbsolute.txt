@@ -106,3 +106,4 @@ C:\Development\C#_development\Github\FocusLock\FocusLock\FocusLock\FocusLock\obj
 C:\Development\C#_development\Github\FocusLock\FocusLock\FocusLock\FocusLock\obj\Release\FocusLock.csproj.GenerateResource.Cache
 C:\Development\C#_development\Github\FocusLock\FocusLock\FocusLock\FocusLock\obj\Release\FocusLock.exe
 C:\Development\C#_development\Github\FocusLock\FocusLock\FocusLock\FocusLock\obj\Release\FocusLock.pdb
+C:\Development\C#_development\Github\FocusLock\FocusLock\FocusLock\FocusLock\obj\Release\FocusLock.csprojResolveAssemblyReference.cache

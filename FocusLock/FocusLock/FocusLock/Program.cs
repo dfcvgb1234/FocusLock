@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using Microsoft.Win32;
 using System.Windows.Forms;
+using System.Reflection;
 
 namespace FocusLock
 {
@@ -22,8 +23,14 @@ namespace FocusLock
         // Fortæller programmet om der skal kører eller om det var fordi at man lukkede login boksen
         public static bool shouldRun = false;
 
+        public static bool isConnected;
+
         // Fortæller programmet hvilke elementer du har adgang til
         public static int permission = 0;
+
+        public static string room;
+
+        public static string ID;
 
         // Paths to important files
         static string hostsPath = @"C:\Windows\System32\drivers\etc\hosts";
@@ -57,8 +64,6 @@ namespace FocusLock
                 ForceAdmin();
             }
 
-            CheckForUpdates();
-
             // Sørger for at hosts filen den er der
             if (!File.Exists(hostsPath))
             {
@@ -77,54 +82,83 @@ namespace FocusLock
             // checker om computeren har forbindelse til internettet
             if (IsMachineUp("www.google.com"))
             {
-                if (!MainForm.KeyExists("ProgramsChanged"))
-                {
-                    Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("ProgramsChanged", "");
-                }
+                isConnected = true;
+                CheckForUpdates();
 
-                if (!MainForm.KeyExists("ChangedHost"))
+                if (isConnected)
                 {
-                    Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("ChangedHost", "");
-                }
-
-                if (Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").GetValue("ProgramsChanged").ToString() != "TRUE")
-                {
-                    DownloadProgramList();
-                }
-
-                if(!MainForm.KeyExists("ChangedHost"))
-                {
-                    Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("ChangedHost", "");
-                }
-                else
-                {
-                    if(Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").GetValue("ChangedHost").ToString() != "TRUE")
+                    if (!MainForm.KeyExists("ProgramsChanged"))
                     {
-                        DownloadHostsFile();
+                        Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("ProgramsChanged", "");
                     }
-                }
 
+                    if (!MainForm.KeyExists("ChangedHost"))
+                    {
+                        Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("ChangedHost", "");
+                    }
+
+                    if (Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").GetValue("ProgramsChanged").ToString() != "TRUE")
+                    {
+                        DownloadProgramList();
+                    }
+
+                    if (!MainForm.KeyExists("ChangedHost"))
+                    {
+                        Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("ChangedHost", "");
+                    }
+                    else
+                    {
+                        if (Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").GetValue("ChangedHost").ToString() != "TRUE")
+                        {
+                            DownloadHostsFile();
+                        }
+                    }
+                    isConnected = true;
+                }
             }
             else
             {
                 CheckProgramList();
+                MessageBox.Show("Du har ikke noget internet, kører programmet i offline-tilstand", "FEJL!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                isConnected = false;
             }
 
             // Laver vores array ud fra det data vi har i program nøglen
             CreateProgramArray();
-            
+
             // Start startwatch, som der sørger for at finde de programmer som der åbnes
             startWatch.EventArrived += StartWatch_EventArrived;
             startWatch.Start();
 
             // Åbner login formen
-            var login = new LoginForm();
-            login.Show();
-            login.FormClosed += Login_FormClosed;
+            if (isConnected)
+            {
+                var login = new LoginForm();
+                login.Show();
+                login.FormClosing += Login_FormClosing;
+            }
+            else
+            {
+                OpenMainForm(1, "", "offline");
+            }
 
             // Kører Programmet
             Application.Run();
         }
+
+        private static void Login_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Checker om programmet skal lukkes eller ej
+            if (!MainForm.butPressed && !shouldRun)
+            {
+                Environment.Exit(0);
+            }
+            if(e.CloseReason == CloseReason.FormOwnerClosing)
+            {
+                Environment.Exit(0);
+            }
+        }
+
         // Start metoden slut
 
         // En metode som der laver vores array
@@ -184,7 +218,6 @@ namespace FocusLock
         {
             var version = FileVersionInfo.GetVersionInfo(Environment.CurrentDirectory + @"\" + "FocusLock.exe");
             Console.WriteLine(version.FileVersion);
-            again:
             try
             {
                 using (WebClient client = new WebClient())
@@ -193,16 +226,24 @@ namespace FocusLock
                     client.DownloadFile("ftp://ftp.focuslock.dk/FocusLock_updates/CurrentVersion.txt", Environment.CurrentDirectory + @"\CurrentVersion.txt");
                 }
             }
-            catch { goto again; }
+            catch
+            {
+                MessageBox.Show("Du sidder bag en proxy, starter programmet i offline-tilstand", "FEJL!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                isConnected = false;
+                goto nointer;
+            }
             string onlineversion = File.ReadAllText(Environment.CurrentDirectory + @"\CurrentVersion.txt");
-            Console.WriteLine(onlineversion);
-
-            if(version.FileVersion != onlineversion)
+            string[] nospace = onlineversion.Split('\n');
+            Console.WriteLine(nospace[0]);
+            if (version.FileVersion != nospace[0])
             {
                 Console.WriteLine(Environment.CurrentDirectory + @"\FocusLock_updater.exe");
-                Process.Start(Environment.CurrentDirectory + @"\FocusLock_updater.exe",onlineversion);
+                Process.Start(Environment.CurrentDirectory + @"\FocusLock_updater.exe", onlineversion);
                 Environment.Exit(1);
             }
+            isConnected = true;
+            nointer:;
+
         }
 
         // Checker om der  er en program fil, hvis der ikke er noget net
@@ -251,20 +292,12 @@ namespace FocusLock
         }
         // ForceAdmin metode slut
 
-        // Metode der tjekker om login formen den bliver lukket
-        private static void Login_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            // Checker om programmet skal lukkes eller ej
-            if(!MainForm.butPressed && !shouldRun)
-            {
-                Environment.Exit(0);
-            }
-        }
-
-        public static void OpenMainForm(int perm)
+        public static void OpenMainForm(int perm, string roomID, string id)
         {
             shouldRun = true;
             permission = perm;
+            room = roomID;
+            ID = id;
             var main = new MainForm();
             main.Show();
         }

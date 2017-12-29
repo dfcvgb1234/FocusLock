@@ -30,6 +30,8 @@ namespace FocusLock
 
         static MenuStrip menu;
 
+        static ComboBox admin_box;
+
         public static ComboBox cb = new ComboBox();
 
         static Button focusBut;
@@ -169,7 +171,26 @@ namespace FocusLock
 
             logout = false;
 
+            
+
             key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock");
+
+            if(Program.permission == 4)
+            {
+                admin_box = new ComboBox()
+                {
+                    Location = new Point(0, 168),
+                    Size = new Size(121, 21)
+                };
+                admin_box.Items.Add("RESTART");
+                admin_box.Items.Add("STOP");
+                admin_box.Items.Add("START");
+                admin_box.Items.Add("STOP(FORCE)");
+                admin_box.Items.Add("START(FORCE)");
+
+                this.Controls.Add(admin_box);
+                admin_box.SelectedIndexChanged += Admin_box_SelectedIndexChanged;
+            }
 
             if (key.GetValue("CurrentOption") != null)
             {
@@ -221,6 +242,45 @@ namespace FocusLock
                 System.IO.File.Create(@"C:\Windows\System32\drivers\etc\host.begeba").Close();
             }
         }
+
+        private static void Admin_box_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (admin_box.Text)
+            {
+                case "RESTART":
+                    StartProgram(false);
+
+                    Thread.Sleep(1500);
+
+                    StartProgram(true);
+                    MessageBox.Show("Programmet er blevet genstartet");
+                    break;
+
+                case "START":
+                    StartProgram(true);
+                    MessageBox.Show("Programmet er blevet startet");
+                    break;
+
+                case "STOP":
+                    StartProgram(false);
+                    MessageBox.Show("Programmet er blevet stoppet");
+                    break;
+
+                case "START(FORCE)":
+                    StartProgram(false);
+                    Thread.Sleep(200);
+                    StartProgram(true);
+                    MessageBox.Show("Programmet er blevet startet");
+                    break;
+
+                case "STOP(FORCE)":
+                    StartProgram(false);
+                    Thread.Sleep(200);
+                    Environment.Exit(1);
+                    break;
+            }
+        }
+
         // metode slut
 
         // metode til at opdatere Host filen
@@ -378,7 +438,7 @@ namespace FocusLock
         {
 
             if (isTime)
-            {   again:
+            {
                 FormCollection col = Application.OpenForms;
                 foreach (Form j in col)
                 {
@@ -482,44 +542,51 @@ namespace FocusLock
         // metode der sletter det data som er blevet lagt ind i registry
         public static void DeleteRegistryData(List<object> Processes)
         {
-            //Microsoft.Win32.Registry.LocalMachine.DeleteSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\cmd.exe");
-            Microsoft.Win32.Registry.LocalMachine.DeleteSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\taskmgr.exe");
-
-            string[] proc = Processes.Where(x => x != null)
-                       .Select(x => x.ToString())
-                       .ToArray();
-            Console.WriteLine(proc.Length);
-            Console.WriteLine(checkedPrograms.Count);
             try
             {
-                foreach (string n in proc)
+                //Microsoft.Win32.Registry.LocalMachine.DeleteSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\cmd.exe");
+                Microsoft.Win32.Registry.LocalMachine.DeleteSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\taskmgr.exe");
+
+                string[] proc = Processes.Where(x => x != null)
+                           .Select(x => x.ToString())
+                           .ToArray();
+                Console.WriteLine(proc.Length);
+                Console.WriteLine(checkedPrograms.Count);
+                try
                 {
-                    Console.WriteLine(n=="spotify");
-                    if (Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\" + n + ".exe") != null)
+                    foreach (string n in proc)
                     {
-                        Microsoft.Win32.Registry.LocalMachine.DeleteSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\" + n + ".exe");
+                        Console.WriteLine(n == "spotify");
+                        if (Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\" + n + ".exe") != null)
+                        {
+                            Microsoft.Win32.Registry.LocalMachine.DeleteSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\" + n + ".exe");
+                        }
                     }
                 }
+                catch
+                {
+                }
+
+                if (KeyExists("CurrentOption"))
+                {
+                    Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").DeleteValue("CurrentOption");
+                }
+
+                if (KeyExists("TimeInfo"))
+                {
+                    Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").DeleteValue("TimeInfo");
+                }
+
+                RegistryKey key;
+
+                key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run");
+
+                key.DeleteValue("FocusLock");
             }
-            catch
+            catch (Exception ex)
             {
+                MessageBox.Show(ex.Message,"FEJL!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            if (KeyExists("CurrentOption"))
-            {
-                Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").DeleteValue("CurrentOption");
-            }
-
-            if (KeyExists("TimeInfo"))
-            {
-                Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").DeleteValue("TimeInfo");
-            }
-
-            RegistryKey key;
-
-            key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run");
-
-            key.DeleteValue("FocusLock");
         }
 
         public static bool KeyExists(string value)

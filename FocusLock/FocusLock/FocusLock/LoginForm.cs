@@ -72,17 +72,14 @@ namespace FocusLock
 
                 if (response != null)
                 {
-                    if (response.Contains("Permission"))
+                    if (response.Contains("granted"))
                     {
-                        int index = response.IndexOf("Permission");
-                        string perm = "Permission";
-                        int endIndex = index + perm.Length;
-                        endIndex++;
-                        string resp = response.Substring(endIndex, 1);
+                        string[] respsplit = response.Split(';');
 
-                        Console.WriteLine("You have the permission level of: {0}", resp);
+                        Console.WriteLine("Your classroom is: {0}", respsplit[2]);
+                        Console.WriteLine("You have the permission level of: {0}", respsplit[1]);
 
-                        Program.OpenMainForm(Int16.Parse(resp));
+                        Program.OpenMainForm(int.Parse(respsplit[1]),respsplit[2], name);
 
                         if (Save_cred.Checked)
                         {
@@ -113,7 +110,7 @@ namespace FocusLock
 
                             if (result == DialogResult.Yes)
                             {
-                                Program.OpenMainForm(1);
+                                Program.OpenMainForm(1, "", name);
                                 Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("LoginOffline", "TRUE");
 
                                 if (Save_cred.Checked)
@@ -144,7 +141,7 @@ namespace FocusLock
                                     User_txt.Text = creds[0];
                                     Pass_txt.Text = creds[1];
 
-                                    Program.OpenMainForm(1);
+                                    Program.OpenMainForm(1, "", name);
                                     this.FindForm().Close();
                                 }
                             }
@@ -154,7 +151,7 @@ namespace FocusLock
             }
             else
             {
-                Program.OpenMainForm(3);
+                Program.OpenMainForm(3, "", name);
 
                 if (Save_cred.Checked)
                 {
