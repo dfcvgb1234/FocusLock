@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Add));
             this.ProgramName_tx = new System.Windows.Forms.TextBox();
             this.ProcessName_tx = new System.Windows.Forms.TextBox();
             this.Add_but = new System.Windows.Forms.Button();
@@ -87,8 +88,10 @@
             this.Controls.Add(this.Add_but);
             this.Controls.Add(this.ProcessName_tx);
             this.Controls.Add(this.ProgramName_tx);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Add";
-            this.Text = "Add";
+            this.Text = "Tilføj program";
             this.ResumeLayout(false);
             this.PerformLayout();
 

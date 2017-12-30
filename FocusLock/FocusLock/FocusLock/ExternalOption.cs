@@ -4,13 +4,12 @@ using System.Net;
 using Microsoft.Win32;
 using System;
 using System.IO;
+using System.Collections.Generic;
 
 namespace FocusLock
 {
     class ExternalOption
     {
-        string programPath = @"C:\Windows\System32\drivers\etc\External.begeba";
-
         RegistryKey key;
 
         bool fileFound;
@@ -19,16 +18,16 @@ namespace FocusLock
 
         Timer timer = new Timer();
 
+        int tempPerm = Program.permission - 3;
+
         ComboBox cb;
+        Label lbl;
+
+        WebClient client = new WebClient();
 
         // metode som der viser de forskellige controls på skærmen
         public void Show(Form form)
         {
-            if(File.Exists(programPath))
-            {
-                File.Delete(programPath);
-            }
-
             if (Program.permission >= 3)
             {
                 // definerer nye controls
@@ -42,23 +41,29 @@ namespace FocusLock
                 lbl1.Font = new Font("Arial", 18, FontStyle.Bold);
                 lbl1.Text = "Venter på start";
 
-                string[] collection1 = { "Bruger1", "Bruger2", "Bruger3", "Bruger4", "Bruger5" };
                 cb1.Name = "_External_Combobox";
                 cb1.Location = new Point(102, 39);
-                cb1.Items.AddRange(collection1);
+                foreach(string j in GetServerData())
+                {
+                    Console.WriteLine(j);
+                    cb1.Items.Add(j);
+                }
+                cb1.SelectedIndex = 0;
+                //cb.Text = Program.room;
 
                 // Tilføjer dem til programmet
                 form.Controls.Add(lbl1);
                 form.Controls.Add(cb1);
 
                 cb = cb1;
+                lbl = lbl1;
 
-                timer.Interval = 30000;
+                timer.Interval = 3000;
                 timer.Tick += Timer_Tick;
                 timer.Start();
 
                 key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock");
-                cb.SelectedIndex = 0;
+                Update();
             }
             else
             {
@@ -134,26 +139,49 @@ namespace FocusLock
 
         public void Update()
         {
+            fileFound = false;
             Console.WriteLine("LOOKING FOR FILE");
-
-            string findingFile = "";
 
             try
             {
-                using (WebClient webClient = new WebClient())
+                Console.WriteLine("ftp://ftp.focuslock.dk/ftp/FocusLock/" + tempPerm + "/" + Program.ID + "/" + cb.Text + "/");
+
+                // Get the object used to communicate with the server.
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://ftp.focuslock.dk/ftp/FocusLock/" + tempPerm + "/" + Program.ID + "/" + cb.Text + "/");
+                request.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
+
+                // This example assumes the FTP site uses anonymous logon.
+                request.Credentials = new NetworkCredential("focuslock.dk", "bagebe");
+
+                FtpWebResponse response = (FtpWebResponse)request.GetResponse();
+
+                Stream responseStream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(responseStream);
+
+                
+
+                if (reader.ReadToEnd().Contains(".txt"))
                 {
-                    webClient.Credentials = new NetworkCredential("focuslock.dk", "bagebe");
-                    webClient.DownloadFile("ftp://ftp.focuslock.dk/ftp/FocusLock" + "/" + cb.SelectedItem.ToString() + "/" + cb.SelectedItem.ToString() + ".txt", programPath);
+                    fileFound = true;
                 }
-                fileFound = true;
+                else
+                {
+                    fileFound = false;
+                }
+
+                Console.WriteLine("Directory List Complete, status {0}", response.StatusDescription);
+
+                reader.Close();
+                response.Close();
+
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e.Message);
-                fileFound = false;
+                Console.WriteLine(ex.Message);
             }
 
-            if(fileFound && isRunning == false)
+            Console.WriteLine(fileFound);
+            if(fileFound && !isRunning)
             {
                 FormCollection col = Application.OpenForms;
                 foreach (Form form in col)
@@ -168,13 +196,68 @@ namespace FocusLock
                 }
                 key.SetValue("CurrentOption", "EXTERNAL");
                 isRunning = true;
+                lbl.Text = "Programmet kører!";
             }
 
             if(!fileFound && isRunning == true)
-            {
+            {   
+                FormCollection col = Application.OpenForms;
+                foreach (Form form in col)
+                {
+                    form.Activate();
+                }
                 MainForm.StartProgram(false);
                 isRunning = false;
+                lbl.Text = "Venter på start!";
             }
+        }
+
+        private void Time_Tick(object sender, EventArgs e)
+        {
+            client.CancelAsync();
+        }
+
+        public List<string> GetServerData()
+        {
+            List<string> items = new List<string>();
+
+            FtpWebRequest request = (FtpWebRequest)FtpWebRequest.Create("ftp://ftp.focuslock.dk/ftp/FocusLock/" + tempPerm + "/" + Program.ID + "/");
+            request.Method = WebRequestMethods.Ftp.ListDirectory;
+
+            Console.WriteLine("ftp://ftp.focuslock.dk/ftp/FocusLock/" + Program.permission + "/" + Program.ID + "/");
+
+            //request.Proxy = System.Net.WebProxy.GetDefaultProxy();
+            //request.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
+            request.Credentials = new NetworkCredential("focuslock.dk", "bagebe");
+            Stream rs = (Stream)request.GetResponse().GetResponseStream();
+
+            StreamReader sr = new StreamReader(rs);
+            string strList = sr.ReadToEnd();
+            string[] lines = { null };
+
+            if (strList.Contains("\r\n"))
+            {
+                lines = strList.Split(new string[] { "\r\n" }, StringSplitOptions.None);
+            }
+            else if (strList.Contains("\n"))
+            {
+                lines = strList.Split(new string[] { "\n" }, StringSplitOptions.None);
+            }
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                if (i > 1)
+                {
+                    if (!String.IsNullOrWhiteSpace(lines[i]))
+                    {
+                        items.Add(lines[i]);
+                    }
+                }
+            }
+
+            rs.Close();
+            sr.Close();
+            return items;
         }
     }
 }

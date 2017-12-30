@@ -92,7 +92,7 @@ namespace FocusLock
             but1.FlatAppearance.MouseDownBackColor = Color.Transparent;
             but1.FlatAppearance.MouseOverBackColor = Color.Transparent;
             but1.Location = new Point(397, 130);
-            but1.Image = Image.FromFile(Environment.CurrentDirectory + @"\Rescources\Lock_open.png");
+            but1.Image = Image.FromFile(Environment.CurrentDirectory + @"\Lock_open.png");
             but1.Size = new Size(50,50);
             but1.Click += But1_Click; ;
             //but1.Text = "Start";

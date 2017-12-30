@@ -66,27 +66,24 @@ namespace FocusLock
 
             if (name != "Admin" && pass != "Bagebe")
             {
-                string response = SendRequest("https://focuslock.dk/php/permRequest.php?email=" + name + "&" + "pass=" + pass);
+                string response = SendRequest("https://www.focuslock.dk/php/permRequest.php?email=" + name + "&" + "pass=" + pass);
 
                 Console.WriteLine(response);
 
                 if (response != null)
                 {
-                    if (response.Contains("Permission"))
+                    if (response.Contains("granted"))
                     {
-                        int index = response.IndexOf("Permission");
-                        string perm = "Permission";
-                        int endIndex = index + perm.Length;
-                        endIndex++;
-                        string resp = response.Substring(endIndex, 1);
+                        string[] respsplit = response.Split(';');
 
-                        Console.WriteLine("You have the permission level of: {0}", resp);
+                        Console.WriteLine("Your classroom is: {0}", respsplit[2]);
+                        Console.WriteLine("You have the permission level of: {0}", respsplit[1]);
 
-                        Program.OpenMainForm(Int16.Parse(resp));
+                        Program.OpenMainForm(int.Parse(respsplit[1]),respsplit[2], name);
 
                         if (Save_cred.Checked)
                         {
-                            Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("Creds", name + ";" + pass);
+                            Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("Creds", name + ";" + Pass_txt.Text);
                             Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("SaveCreds", "TRUE");
                         }
                         else
@@ -95,17 +92,66 @@ namespace FocusLock
                             Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("SaveCreds", "FALSE");
                         }
 
+                        Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("LoginOffline", "FALSE");
+
                         this.FindForm().Close();
                     }
                     else
                     {
-                        Console.WriteLine("Username or Password is incorrect");
+                        if(!MainForm.KeyExists("LoginOffline"))
+                        {
+                            Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("LoginOffline", "FALSE");
+                        }
+
+                        if (Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").GetValue("LoginOffline").ToString() == "FALSE")
+                        {
+                            Console.WriteLine("Username or Password is incorrect");
+                            DialogResult result = MessageBox.Show("De indtastede oplysninger er forkerte, ellers har du ikke forbindelse til internetet. \n\nVil du starte i offline-tilstand?", "STOP!", MessageBoxButtons.YesNo, MessageBoxIcon.Stop);
+
+                            if (result == DialogResult.Yes)
+                            {
+                                Program.OpenMainForm(1, "", name);
+                                Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("LoginOffline", "TRUE");
+
+                                if (Save_cred.Checked)
+                                {
+                                    Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("Creds", name + ";" + Pass_txt.Text);
+                                    Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("SaveCreds", "TRUE");
+                                }
+                                else
+                                {
+                                    Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("Creds", "");
+                                    Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("SaveCreds", "FALSE");
+                                }
+
+                                this.FindForm().Close();
+                            }
+                            else
+                            {
+                                Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").SetValue("LoginOffline", "FALSE");
+                            }
+                        }
+                        else
+                        {
+                            if (MainForm.KeyExists("Creds"))
+                            {
+                                if (!String.IsNullOrEmpty(Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").GetValue("Creds").ToString()))
+                                {
+                                    string[] creds = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Begeba\FocusLock").GetValue("Creds").ToString().Split(';');
+                                    User_txt.Text = creds[0];
+                                    Pass_txt.Text = creds[1];
+
+                                    Program.OpenMainForm(1, "", name);
+                                    this.FindForm().Close();
+                                }
+                            }
+                        }
                     }
                 }
             }
             else
             {
-                Program.OpenMainForm(3);
+                Program.OpenMainForm(3, "", name);
 
                 if (Save_cred.Checked)
                 {
@@ -161,6 +207,27 @@ namespace FocusLock
                 Console.WriteLine("Error while receiving data from the server:\n" + ex.Message + "Something broke.. :(");
                 return null;
             }
+        }
+
+        private void User_txt_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if(e.KeyChar == (char)Keys.Enter)
+            {
+                Login_but.PerformClick();
+            }
+        }
+
+        private void Pass_txt_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                Login_but.PerformClick();
+            }
+        }
+
+        private void User_lbl_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
