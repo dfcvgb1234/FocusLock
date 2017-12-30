@@ -7,7 +7,7 @@ and open the template in the editor.
     Created on : 30-12-2017, 12:21:14
     Author     : Apollo
 */
-
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
 .root {
      -fx-background-color: #F6F6F6;
 }
@@ -37,7 +37,7 @@ and open the template in the editor.
     -fx-effect: dropshadow( gaussian , rgba(255,255,255,1) , 0,0,0,1 );
 }
 
-#btn-default-lg-mac {
+#btn-default-lg-linux {
     -fx-font-family: "Montserrat";
     -fx-font-size: 28px;
     -fx-border-radius: 0;
