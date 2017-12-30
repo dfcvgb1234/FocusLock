@@ -21,7 +21,6 @@ and open the template in the editor.
     -fx-border-style: solid;
     -fx-border-color: #FC6B0A;
     -fx-text-fill: #FC6B0A;
-    /*-fx-background-color: transparent;*/
     -fx-padding: 10px 16px 10px 16px;
 }
 
@@ -30,7 +29,6 @@ and open the template in the editor.
     -fx-border-style: solid;
     -fx-border-color: #FC6B0A;
     -fx-text-fill: #000;
-    /*-fx-background-color: #FC6B0A;*/
 }
 
 #btn-default-lg:hover .text, #btn-default-lg:focus .text {
@@ -46,6 +44,5 @@ and open the template in the editor.
     -fx-border-style: solid;
     -fx-border-color: #FC1B0A;
     -fx-text-fill: #FC1B0A;
-    /*-fx-background-color: transparent;*/
     -fx-padding: 10px 16px 10px 16px;
 }
