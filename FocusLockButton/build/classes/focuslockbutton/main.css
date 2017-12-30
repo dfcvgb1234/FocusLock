@@ -7,7 +7,7 @@ and open the template in the editor.
     Created on : 30-12-2017, 12:21:14
     Author     : Apollo
 */
-
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
 .root {
      -fx-background-color: #F6F6F6;
 }

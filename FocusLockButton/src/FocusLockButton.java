@@ -29,6 +29,7 @@ public class FocusLockButton extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        // Debugging
         System.out.println(System.getProperty("user.home") + "\\Desktop\\hej.txt");
         // Får data fra en fil ved hjælp af FileIO class
         FileIO io = new FileIO(System.getProperty("user.home") + "/Desktop/hej.txt");
@@ -36,14 +37,16 @@ public class FocusLockButton extends Application {
         
         // Sikre at der ikke sker en fejl når vi læser data fra filen
         try {
+            // Omdanner den liste FileIO class laver til en observable array
             lines = FXCollections.observableArrayList(io.GenerateLineList());
         } catch (IOException ex) {
             Logger.getLogger(FocusLockButton.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        // Generer et StackPane som vi kan putte controls på
+        // Generer et GridPane som vi kan putte controls på
         final GridPane root = new GridPane();
         final Button button = new Button("CHROME KILLER");
+        // Laver et ListView som den inderholder alle de linjer fra Filen
         final ListView lv = new ListView(lines);
         button.setId("btn-default-lg");
         
@@ -154,9 +157,10 @@ public class FocusLockButton extends Application {
             }
         });
 		
-		
+	// Tilføjer controls til pane	
         root.add(button, 1, 0, 2, 1);
 	root.add(lv, 0, 0);
+        
         final Scene scene = new Scene(root, 420, 175);
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
