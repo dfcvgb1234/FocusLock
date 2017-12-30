@@ -1,48 +1,40 @@
-/*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
-/* 
-    Created on : 30-12-2017, 12:21:14
-    Author     : Apollo
-*/
 @import url('https://fonts.googleapis.com/css?family=Montserrat');
+
 .root {
-     -fx-background-color: #F6F6F6;
+	-fx-background-color: #F6F6F6;
 }
 
 #btn-default-lg {
-    -fx-font-family: "Montserrat";
-    -fx-font-size: 18px;
-    -fx-border-radius: 0;
-    -fx-font-weight: 400;
-    -fx-border-width: 1px;
-    -fx-border-style: solid;
-    -fx-border-color: #FC6B0A;
-    -fx-text-fill: #FC6B0A;
-    -fx-padding: 10px 16px 10px 16px;
+	-fx-font-family: "Montserrat";
+	-fx-font-size: 18px;
+	-fx-border-radius: 0;
+	-fx-font-weight: 400;
+	-fx-border-width: 1px;
+	-fx-border-style: solid;
+	-fx-border-color: #FC6B0A;
+	-fx-text-fill: #FC6B0A;
+	-fx-padding: 10px 16px 10px 16px;
 }
 
 #btn-default-lg:hover, #btn-default-lg:focus {
-    -fx-border-width: 2px;
-    -fx-border-style: solid;
-    -fx-border-color: #FC6B0A;
-    -fx-text-fill: #000;
+	-fx-border-width: 2px;
+	-fx-border-style: solid;
+	-fx-border-color: #FC6B0A;
+	-fx-text-fill: #000;
 }
 
 #btn-default-lg:hover .text, #btn-default-lg:focus .text {
-    -fx-effect: dropshadow( gaussian , rgba(255,255,255,1) , 0,0,0,1 );
+	-fx-effect: dropshadow( gaussian , rgba(255,255,255,1) , 0,0,0,1 );
 }
 
 #btn-default-lg-linux {
-    -fx-font-family: "Montserrat";
-    -fx-font-size: 28px;
-    -fx-border-radius: 0;
-    -fx-font-weight: 400;
-    -fx-border-width: 1px;
-    -fx-border-style: solid;
-    -fx-border-color: #FC1B0A;
-    -fx-text-fill: #FC1B0A;
-    -fx-padding: 10px 16px 10px 16px;
+	-fx-font-family: "Montserrat";
+	-fx-font-size: 28px;
+	-fx-border-radius: 0;
+	-fx-font-weight: 400;
+	-fx-border-width: 1px;
+	-fx-border-style: solid;
+	-fx-border-color: #FC1B0A;
+	-fx-text-fill: #FC1B0A;
+	-fx-padding: 10px 16px 10px 16px;
 }
