@@ -5,14 +5,11 @@ bin-release/
 [Bb]in/
 dist/
 build/
-nbproject/
 
 FocusLockButton/[Dd]ist/
 FocusLockButton/[Bb]uild/
-FocusLockButton/[Nn]bproject/
 FocusLockButton/dist/
 FocusLockButton/build/
-FocusLockButton/nbproject/
 
 # Compiled class file
 *.class

@@ -14,6 +14,7 @@ public class FileIO
 	// Path til filen der skal læses fra
 	Path path;
 
+<<<<<<< HEAD
 	List<String> lines;
 
 	// Constructor til class
@@ -43,4 +44,47 @@ public class FileIO
 		lines = Files.readAllLines(path);
 		return lines;
 	}   
+=======
+/**
+ *
+ * @author InsertName
+ */
+public class FileIO {
+    
+    // Path til filen der skal læses fra
+    Path path;
+    
+    // Laver en liste med alle linjerne i
+    List<String> lines;
+    
+    // Constructor til class
+    public FileIO(String path)
+    {
+        // Laver en ny liste med alle linjerne i filen (ny fil-struktur for program filen)
+        this.lines = new ArrayList<>();
+        this.path = Paths.get(path);
+        
+        // Checker om filen eksistere, hvis ikke lav den
+        if(!Files.exists(this.path))
+        {
+            // Fortæller om der er sket en fejl
+            try 
+            {
+                Files.createFile(this.path);
+            } 
+            catch (IOException ex) 
+            {
+                Logger.getLogger(FileIO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
+    // Fylder den generede liste med linjerne og retunere den
+    public List<String> GenerateLineList() throws IOException
+    {
+        // Læser alle linjer i filen
+        lines = Files.readAllLines(path);
+        return lines;
+    }   
+>>>>>>> 39384af41de9b361b63a6b8e1c00173425536ec4
 }
