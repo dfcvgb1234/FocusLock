@@ -3,9 +3,50 @@ bin-debug/
 bin-release/
 [Oo]bj/
 [Bb]in/
+dist/
+build/
+nbproject/
+
 FocusLockButton/[Dd]ist/
 FocusLockButton/[Bb]uild/
 FocusLockButton/[Nn]bproject/
 FocusLockButton/dist/
 FocusLockButton/build/
 FocusLockButton/nbproject/
+
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Properties
+*.properties
+built-jar.properties
+build/built-jar.properties
+FocusLockButton/build/built-jar.properties
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# NetBeans
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/

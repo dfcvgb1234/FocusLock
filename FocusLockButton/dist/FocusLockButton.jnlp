@@ -8,7 +8,11 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+<<<<<<< HEAD
     <jar href="FocusLockButton.jar" size="10474" download="eager" />
+=======
+    <jar href="FocusLockButton.jar" size="10444" download="eager" />
+>>>>>>> 464a66393fece2da59b805ee47c9ae75205d8eae
   </resources>
   <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="FocusLockButton" >
     <param name="requiredFXVersion" value="8.0+"/>
