@@ -24,6 +24,7 @@ public class FileIO {
     // Path til filen der skal læses fra
     Path path;
     
+    // Laver en liste med alle linjerne i
     List<String> lines;
     
     // Constructor til class
@@ -36,6 +37,7 @@ public class FileIO {
         // Checker om filen eksistere, hvis ikke lav den
         if(!Files.exists(this.path))
         {
+            // Fortæller om der er sket en fejl
             try 
             {
                 Files.createFile(this.path);
@@ -50,6 +52,7 @@ public class FileIO {
     // Fylder den generede liste med linjerne og retunere den
     public List<String> GenerateLineList() throws IOException
     {
+        // Læser alle linjer i filen
         lines = Files.readAllLines(path);
         return lines;
     }   
