@@ -37,7 +37,7 @@ and open the template in the editor.
     -fx-effect: dropshadow( gaussian , rgba(255,255,255,1) , 0,0,0,1 );
 }
 
-#btn-default-lg-mac {
+#btn-default-lg-linux {
     -fx-font-family: "Montserrat";
     -fx-font-size: 28px;
     -fx-border-radius: 0;
