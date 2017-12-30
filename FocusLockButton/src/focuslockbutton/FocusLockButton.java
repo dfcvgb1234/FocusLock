@@ -69,7 +69,8 @@ public class FocusLockButton extends Application {
                             try
                             {
                                 // DEN FINDER WINDOWS KORREKT TESTET
-                                Runtime.getRuntime().exec("taskkill /F /IM chrome.exe");
+                                String[] cmd = {"taskkill","/F","/IM", "chrome.exe"};
+                                Runtime.getRuntime().exec(cmd);
                             }
                             catch (IOException ex)
                             {
@@ -80,9 +81,8 @@ public class FocusLockButton extends Application {
                             try
                             {
                                 // DEN FINDER MAC KORREKT TESTET
-                                button.setId("btn-default-lg-mac");
-                                // Denne kommand lukker ikke Google Chrome, selvom at i mac terminal kan jeg skrive "killall 'Google Chrome' " og den lukker det.
-                                Runtime.getRuntime().exec("/bin/sh killall 'Google Chrome'");
+                                String[] cmd = {"killall", "Google Chrome"};
+                                Runtime.getRuntime().exec(cmd);
                             }
                             catch (IOException ex)
                             {
@@ -92,7 +92,11 @@ public class FocusLockButton extends Application {
                         case Linux:
                             try
                             {
-                                Runtime.getRuntime().exec("/bin/bash -c killall firefox");
+                                // IKKE TESTET ENDNU
+                                button.setId("btn-default-lg-linux");
+                                // Skulle gerne virke, men ikke testet
+                                String[] cmd = {"killall", "Google Chrome"};
+                                Runtime.getRuntime().exec(cmd);
                             }
                             catch (IOException ex)
                             {
