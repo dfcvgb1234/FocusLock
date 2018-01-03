@@ -1,7 +1,10 @@
 package OS;
 import static OS.OSCheck.detectedOS;
 import java.util.Locale;
-
+/**
+ *
+ * @author TheGejr
+ */
 public final class OSCheck
 {
 	public enum OSType
