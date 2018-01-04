@@ -12,7 +12,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -238,21 +237,15 @@ public class FocusLock extends Application
 //		});
         
 		// Start hover over knappen
-		submit.setOnMouseEntered(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				timeline2.stop();
-				timeline.play();
-			}
+		submit.setOnMouseEntered((MouseEvent event) -> {
+			timeline2.stop();
+			timeline.play();
 		});
         
 		// Stop hover over knappen
-		submit.setOnMouseExited(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				timeline.stop();
-				timeline2.play();
-			}
+		submit.setOnMouseExited((MouseEvent event) -> {
+			timeline.stop();
+			timeline2.play();
 		});
 		
 		// Tilføjer controls til Anchor Pane	
