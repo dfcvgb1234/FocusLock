@@ -61,8 +61,8 @@ public class FocusLock extends Application
 		
 		// Laver Parent til controls
 		AnchorPane root = new AnchorPane();
-		root.prefHeight(221.0);
-		root.prefWidth(454.0);
+		root.prefHeight(500.0);
+		root.prefWidth(800.0);
 		
 		// Laver TextFiel til brugernavn/Email
 		TextField usernameField = new TextField();
@@ -72,8 +72,8 @@ public class FocusLock extends Application
 		// Laver ImageView, til vores logo
 		ImageView logo = new ImageView("res/BegebaLogo.png"); // Mappe skal sikkert ændres til en undermappe under /res
 		logo.setFitHeight(60.0);
-		logo.setFitWidth(404.0);
-		logo.setLayoutX(14.0);
+		logo.setFitWidth(400.0);
+		logo.setLayoutX(300.0);
 		logo.setLayoutY(14.0);
 		logo.setPickOnBounds(true);
 		logo.setPreserveRatio(true);
@@ -258,7 +258,7 @@ public class FocusLock extends Application
 		root.getChildren().add(saveCredsBox);
 		
 		// Laver vinduet
-		final Scene scene = new Scene(root, 454, 221);
+		final Scene scene = new Scene(root, 800, 500);
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
 		// Loader CSS'en
