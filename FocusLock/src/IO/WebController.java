@@ -13,15 +13,8 @@ public class WebController {
 	// Global variabel til linket
 	String website;
 	
-	// Contructor til Class
-	public WebController(String website)
-	{
-		// Gemmer argumentet i den globale "website" variabel
-		this.website = website;
-	}
-	
 	// Metode til at læse data fra en hjemmeside
-	public void ReadWebsiteData()
+	public String ReadWebsiteData(String website)
 	{
 		try {
 			// Åbner linket og henter data i en stream
@@ -30,17 +23,17 @@ public class WebController {
 			
 			// Skriver til consolen hvad der står på hjemmesiden
 			String inputLine;
-			while ((inputLine = in.readLine()) != null)
-			{
-				System.out.println(inputLine);
-			}
+			inputLine = in.readLine();
 			in.close();
+			return inputLine;
 		
 		// Exception handlers
 		} catch (MalformedURLException ex) {
 			Logger.getLogger(WebController.class.getName()).log(Level.SEVERE, null, ex);
+			return "ERROR";
 		} catch (IOException ex) {
 			Logger.getLogger(WebController.class.getName()).log(Level.SEVERE, null, ex);
+			return "ERROR";
 		}
 	}
 	

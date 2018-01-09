@@ -1,6 +1,7 @@
 import IO.Encryption;
 import IO.FileIO;
 import IO.WebController;
+import Scenes.*;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -12,6 +13,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -20,10 +22,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.json.simple.parser.JSONParser;
@@ -40,78 +41,61 @@ public class FocusLock extends Application
         ObservableList<String> lines;
 	// JSONParser til ListView
 	JSONParser parser = new JSONParser();
+	// Laver et nyt AnchorPane og tilføjer Controls til den
+	AnchorPane root; 
+	// Laver et objekt til at opbevarer controls i
+	Scene scene;
+	// Laver en ny instant af WebController class med hjemmeside som argument
+	WebController Wc = new WebController();
+	// En string som kommer til at opbevare alle bruger dataerne
+	String userData;
+	// En boolean som holder styr på om man er logget ind eller ej
+	Boolean loggedIn = false;
 	
 	@Override
 	public void start(Stage primaryStage)
-	{
+	{	
+		//*LOGIN CONTROLS*
+		// Definere controls til Login skærm
+		TextField usernameField = new TextField();
+		ImageView logo = new ImageView("res/Images/BegebaLogo.png"); // Mappe skal sikkert ændres til en undermappe under /res
+		PasswordField passwordField = new PasswordField();
+		Label emailLabel = new Label("Email");
+		Label passLabel = new Label("Adgangskode");
+		Button submit = new Button("Login");
+		CheckBox saveCredsBox = new CheckBox("Gem Oplysninger");
+		//*LOGIN CONTROLS*
+		
+		//*MAIN CONTROLS*
+		// Definere controls til main skærm
+		Button timeButton = new Button("TID");
+		Button calendarButton =  new Button("KALENDER");
+		Button externButton = new Button("EKSTERN");
+		ImageView helpImage =  new ImageView("res/Images/help.png");
+		ImageView logoImage =  new ImageView("res/Images/Logo_NoText.png");
+		AnchorPane interfacePane = new AnchorPane();
+		Rectangle interfaceRectangle = new Rectangle();
+		Label userLabel = new Label("REPLACE ME!");
+		ImageView settingsImage = new ImageView("res/Images/settings-icon.png");
+		//*MAIN CONTROLS*
+		
+		// Laver et nyt objekt af login class
+		Login login = new Login();
+		
+		// Laver et nyt objekt af main class
+		Main main = new Main();
+		
 		// Får data fra en fil ved hjælp af FileIO class
-		FileIO io = new FileIO(System.getProperty("user.home") + "/Desktop/hej.json");
+		FileIO io = new FileIO(System.getProperty("user.home") + "/Desktop/FL-Data.json");
 		
 		// Laver en ny instant af Encryption class
 		Encryption enc = new Encryption();
-		// Skriver til consollen hvad der bliver returned
-		System.out.println(enc.generateHASH("Chsb1234")); // Temp, skal modtage data fra passwordField
-		
-		// Laver en ny instant af WebController class med hjemmeside som argument
-		WebController Wc = new WebController("https://www.focuslock.dk/php/permRequest.php?email=www.favs2@gmail.com&pass=" + enc.generateHASH("Chsb1234"));	
-		// Læser data fra hjemmesiden gevet ovenover
-		Wc.ReadWebsiteData();
 		
 		// Omdanner den liste FileIO class laver til en observable array
 		lines = FXCollections.observableArrayList(io.ReadJsonFile());			
 		
-		// Laver Parent til controls
-		AnchorPane root = new AnchorPane();
-		root.prefHeight(221.0);
-		root.prefWidth(454.0);
-		
-		// Laver TextFiel til brugernavn/Email
-		TextField usernameField = new TextField();
-		usernameField.setLayoutX(59.0);
-		usernameField.setLayoutY(98.0);
-		
-		// Laver ImageView, til vores logo
-		ImageView logo = new ImageView("res/BegebaLogo.png"); // Mappe skal sikkert ændres til en undermappe under /res
-		logo.setFitHeight(60.0);
-		logo.setFitWidth(404.0);
-		logo.setLayoutX(14.0);
-		logo.setLayoutY(14.0);
-		logo.setPickOnBounds(true);
-		logo.setPreserveRatio(true);
-		
-		// Laver PasswordField til adgangskode
-		PasswordField passwordField = new PasswordField();
-		passwordField.setLayoutX(59.0);
-		passwordField.setLayoutY(158.0);
-		
-		// Laver Label så brugeren kan se hvor de skal skrive Email
-		Label emailLabel = new Label("Email");
-		emailLabel.setLayoutX(106.0);
-		emailLabel.setLayoutY(74.0);
-		emailLabel.setFont(Font.font(17.0));
-		
-		// Laver Label så brugeren kan se hvor de skal skrive adgangskode
-		Label passLabel = new Label("Adgangskode");
-		passLabel.setLayoutX(82.0);
-		passLabel.setLayoutY(133.0);
-		passLabel.setFont(Font.font(17.0));
-		
-		// Laver Button til at logge ind med
-		Button submit = new Button("Login");
-		submit.setLayoutX(345.0);
-		submit.setLayoutY(139.0);
-		submit.setMnemonicParsing(false);
-		submit.setPrefSize(83, 39);
-		// TODO: Action Handler
-		
-		// Laver CheckBox, så man kan bestemme om man vil gemme sine oplysninger
-		CheckBox saveCredsBox = new CheckBox("Gem Oplysninger");
-		saveCredsBox.setLayoutX(330.0);
-		saveCredsBox.setLayoutY(183.0);
-		saveCredsBox.setMnemonicParsing(false);
-		// TODO: Save Creds
-		
-		
+		// Tilføjer login scenen til root
+		root = login.GenerateScene(usernameField, logo, passwordField, emailLabel, passLabel, submit, saveCredsBox);
 		
 //		// Tilføjer alle elementer til ListView
 //		lines.forEach((String line) -> {
@@ -236,36 +220,35 @@ public class FocusLock extends Application
 //
 //			}
 //		});
-        
-		// Start hover over knappen
-		submit.setOnMouseEntered(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				timeline2.stop();
-				timeline.play();
-			}
-		});
-        
-		// Stop hover over knappen
-		submit.setOnMouseExited(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				timeline.stop();
-				timeline2.play();
-			}
-		});
 		
-		// Tilføjer controls til Anchor Pane	
-		root.getChildren().add(usernameField);
-		root.getChildren().add(passwordField);
-		root.getChildren().add(logo);
-		root.getChildren().add(emailLabel);
-		root.getChildren().add(passLabel);
-		root.getChildren().add(submit);
-		root.getChildren().add(saveCredsBox);
+		// Action Handler for login knappen
+		submit.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				// Læser data fra hjemmesiden gevet som argument
+				userData = Wc.ReadWebsiteData("https://www.focuslock.dk/php/permRequest.php?email=" + usernameField.getText() + "&pass=" + enc.generateHASH(passwordField.getText()));
+				// Deler hjemmeside dataerne op i en String array
+				String[] splitWebData = userData.split(";");
+				if("granted".equals(splitWebData[0]))
+				{
+					loggedIn = true;
+					System.out.println("Hej " + splitWebData[4] + ", dit ID er: " + splitWebData[3] + ". Din klasse er: " + splitWebData[2] + ", og permission er: " + splitWebData[1]);
+					
+					// Skifter scenen til main scenen og tilføjer controls
+					root = main.GenerateScene(timeButton, calendarButton, externButton, logoImage, helpImage, interfacePane, interfaceRectangle, userLabel, settingsImage);
+					scene = new Scene(root, 665, 399);
+					userLabel.setText(splitWebData[4]);
+					primaryStage.setScene(scene);
+					
+					// Tilføjer brugeren til at være online i databasen
+					Wc.ReadWebsiteData("https://www.focuslock.dk/php/addUser.php?id=" + splitWebData[3]);
+				}
+			}
+			
+		});
 		
 		// Laver vinduet
-		final Scene scene = new Scene(root, 454, 221);
+		scene = new Scene(root, 454, 221);
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
 		// Loader CSS'en
@@ -273,6 +256,17 @@ public class FocusLock extends Application
 		primaryStage.show();
 	}
 
+	@Override
+	public void stop()
+	{
+		// Hvis brugeren er logget ind skal man slette brugeren for at være online
+		if(loggedIn)
+		{
+			// Sletter brugeren for at være online i databasen
+			Wc.ReadWebsiteData("https://www.focuslock.dk/php/removeUser.php?id=" + userData.split(";")[3]);
+		}
+	}
+	
 	public static void main(String[] args)
 	{
 		launch(args);
