@@ -226,23 +226,25 @@ public class FocusLock extends Application
 			@Override
 			public void handle(ActionEvent event) {
 				// Læser data fra hjemmesiden gevet som argument
-				userData = Wc.ReadWebsiteData("https://www.focuslock.dk/php/permRequest.php?email=" + usernameField.getText() + "&pass=" + enc.generateHASH(passwordField.getText()));
+				System.out.println(enc.digestOnly(passwordField.getText()));
+				System.out.println(enc.generateHASH(passwordField.getText()));
+				//userData = Wc.ReadWebsiteData("https://www.focuslock.dk/php/permRequest.php?email=" + usernameField.getText() + "&pass=" + enc.generateHASH(passwordField.getText()));
 				// Deler hjemmeside dataerne op i en String array
-				String[] splitWebData = userData.split(";");
-				if("granted".equals(splitWebData[0]))
-				{
-					loggedIn = true;
-					System.out.println("Hej " + splitWebData[4] + ", dit ID er: " + splitWebData[3] + ". Din klasse er: " + splitWebData[2] + ", og permission er: " + splitWebData[1]);
-					
-					// Skifter scenen til main scenen og tilføjer controls
-					root = main.GenerateScene(timeButton, calendarButton, externButton, logoImage, helpImage, interfacePane, interfaceRectangle, userLabel, settingsImage);
-					scene = new Scene(root, 665, 399);
-					userLabel.setText(splitWebData[4]);
-					primaryStage.setScene(scene);
-					
-					// Tilføjer brugeren til at være online i databasen
-					Wc.ReadWebsiteData("https://www.focuslock.dk/php/addUser.php?id=" + splitWebData[3]);
-				}
+//				String[] splitWebData = userData.split(";");
+//				if("granted".equals(splitWebData[0]))
+//				{
+//					loggedIn = true;
+//					System.out.println("Hej " + splitWebData[4] + ", dit ID er: " + splitWebData[3] + ". Din klasse er: " + splitWebData[2] + ", og permission er: " + splitWebData[1]);
+//					
+//					// Skifter scenen til main scenen og tilføjer controls
+//					root = main.GenerateScene(timeButton, calendarButton, externButton, logoImage, helpImage, interfacePane, interfaceRectangle, userLabel, settingsImage);
+//					scene = new Scene(root, 665, 399);
+//					userLabel.setText(splitWebData[4]);
+//					primaryStage.setScene(scene);
+//					
+//					// Tilføjer brugeren til at være online i databasen
+//					Wc.ReadWebsiteData("https://www.focuslock.dk/php/addUser.php?id=" + splitWebData[3]);
+//				}
 			}
 			
 		});
