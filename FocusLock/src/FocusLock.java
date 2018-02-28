@@ -228,7 +228,7 @@ public class FocusLock extends Application
 				// Læser data fra hjemmesiden gevet som argument
 				System.out.println(enc.digestOnly(passwordField.getText()));
 				System.out.println(enc.generateHASH(passwordField.getText()));
-				//userData = Wc.ReadWebsiteData("https://www.focuslock.dk/php/permRequest.php?email=" + usernameField.getText() + "&pass=" + enc.generateHASH(passwordField.getText()));
+				userData = Wc.ReadWebsiteData("https://www.focuslock.dk/php/permRequest.php?email=" + usernameField.getText() + "&pass=" + enc.generateHASH(passwordField.getText()));
 				// Deler hjemmeside dataerne op i en String array
 //				String[] splitWebData = userData.split(";");
 //				if("granted".equals(splitWebData[0]))
